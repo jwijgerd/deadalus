@@ -98,9 +98,7 @@ public final class GeoHash {
 
 		return new double []{latitude, longitude, lat_err, lon_err};
 	}		
-	public GeoHash getNeighbour(int direction, int length) {
-		return null;
-	}
+
 
 	/**
 	 * how many singificant bits are there in this hash?
@@ -148,8 +146,8 @@ public final class GeoHash {
 	 */
 	// TODO: make sure this method works as intented for corner cases!
 	public WGS84Point getBoundingBoxCenterPoint() {
-		double centerLatitude = (boundingBox[0].latitude + boundingBox[1].latitude) / 2;
-		double centerLongitude = (boundingBox[0].longitude + boundingBox[1].longitude) / 2;
+		double centerLatitude = (boundingBox[0].getLatitude() + boundingBox[1].getLatitude()) / 2;
+		double centerLongitude = (boundingBox[0].getLongitude() + boundingBox[1].getLongitude()) / 2;
 		return new WGS84Point(centerLatitude, centerLongitude);
 	}
 

@@ -4,15 +4,16 @@ package ch.hsr.geohash;
  * {@link WGS84Point} encapsulates coordinates on the earths surface.<br>
  * Coordinate projections might end up using this class...
  */
-public class WGS84Point {
-	private static final double EPSILON = 1e-12;
-	protected double longitude;
-	protected double latitude;
-	static final double equatorRadius = 6378137d, poleRadius = 6356752.3142d,
-			f = 1 / 298.257223563d;
+public final class WGS84Point {
+	private static final double EPSILON = 1e-12d;
+	private final double longitude;
+	private final double latitude;
+	static final double equatorRadius = 6378137d;
+    static final double poleRadius = 6356752.3142d;
+	static final double f = 1 / 298.257223563d;
 	static final double degToRad = 0.0174532925199433d;
-	static final double equatorRadiusSquared = equatorRadius * equatorRadius,
-			poleRadiusSquared = poleRadius * poleRadius;
+	static final double equatorRadiusSquared = equatorRadius * equatorRadius;
+	static final double	poleRadiusSquared = poleRadius * poleRadius;
 
 	public WGS84Point(double latitude, double longitude) {
 		this.latitude = latitude;
@@ -28,7 +29,7 @@ public class WGS84Point {
 	 * following distance of the given point.<br>
 	 * Uses Vincenty's formula and the WGS84 ellipsoid.
 	 * 
-	 * @param directionInDegrees
+	 * @param bearingInDegrees
 	 *            : must be within 0 and 360
 	 */
 	public static WGS84Point moveInDirection(WGS84Point point,
@@ -93,12 +94,12 @@ public class WGS84Point {
 	}
 
 	
-	public static double distanceInMeters(WGS84Point foo, WGS84Point bar) {
-		double a = 6378137, b = 6356752.3142, f = 1 / 298.257223563; // WGS-84
+	public static double distanceInMeters(WGS84Point from, WGS84Point to) {
+		//double a = 6378137, b = 6356752.3142, f = 1 / 298.257223563; // WGS-84
 		// ellipsiod
-		double L = (bar.longitude - foo.longitude) * degToRad;
-		double U1 = Math.atan((1 - f) * Math.tan(foo.latitude * degToRad));
-		double U2 = Math.atan((1 - f) * Math.tan(bar.latitude * degToRad));
+		double L = (to.longitude - from.longitude) * degToRad;
+		double U1 = Math.atan((1 - f) * Math.tan(from.latitude * degToRad));
+		double U2 = Math.atan((1 - f) * Math.tan(to.latitude * degToRad));
 		double sinU1 = Math.sin(U1), cosU1 = Math.cos(U1);
 		double sinU2 = Math.sin(U2), cosU2 = Math.cos(U2);
 
@@ -133,7 +134,7 @@ public class WGS84Point {
 
 		if (iterLimit == 0)
 			return Double.NaN;
-		double uSquared = cosSqAlpha * (a * a - b * b) / (b * b);
+		double uSquared = cosSqAlpha * (equatorRadius * equatorRadius - poleRadius * poleRadius) / poleRadiusSquared;
 		double A = 1
 				+ uSquared
 				/ 16384
@@ -148,9 +149,7 @@ public class WGS84Point {
 								/ 6 * cos2SigmaM
 								* (-3 + 4 * sinSigma * sinSigma)
 								* (-3 + 4 * cos2SigmaM * cos2SigmaM)));
-		double s = b * A * (sigma - deltaSigma);
-
-		return s;
+		return poleRadius * A * (sigma - deltaSigma);
 	}
 
 	public double getLongitude() {

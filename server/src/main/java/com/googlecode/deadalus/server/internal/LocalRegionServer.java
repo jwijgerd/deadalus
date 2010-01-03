@@ -22,10 +22,13 @@ import com.googlecode.deadalus.Coordinate;
 import com.googlecode.deadalus.events.Event;
 import com.googlecode.deadalus.events.EventCallback;
 
-import java.util.UUID;
-import java.util.Collection;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import ch.hsr.geohash.GeoHash;
 
 /**
  * Implememtation of a RegionServer that is running in the local JVM.
@@ -34,26 +37,49 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class LocalRegionServer implements RegionServer {
     /** The queue that holds the events that still need to be processed */
-    private final BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>();
+    private final BlockingQueue<LocalEvent> eventQueue = new LinkedBlockingQueue<LocalEvent>();
+    /** The map of SpatialObject instances, can be empty if all regions are handled by other RegionServers */
+    private final Map<UUID,SpatialObject> managedObjects = new ConcurrentHashMap<UUID,SpatialObject>();
+
+    private final List<RegionServer> managedServers = new CopyOnWriteArrayList<RegionServer>();
 
     @Override
     public void broadCast(Event event) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // add an event for each UUID that is locally managed and broadcast the event to other RegionServer instances
+        for (UUID uuid : managedObjects.keySet()) {
+            sendLocal(event,uuid,null,true);
+        }
+        for (RegionServer managedServer : managedServers) {
+            managedServer.broadCast(event);
+        }
     }
 
     @Override
     public void send(Event event, UUID recipientId, EventCallback eventCallback) {
+        // first check if we manage UUID ourselves
+        if(managedObjects.containsKey(recipientId)) {
+            sendLocal(event,recipientId,eventCallback,false);
+        } else {
+            // now we need to find it, we just send the event to the other servers and have them figure it out
+            for (RegionServer managedServer : managedServers) {
+                managedServer.send(event,recipientId,eventCallback);
+            }
+        }
 
+    }
+
+    private void sendLocal(Event event, UUID recipientId, EventCallback eventCallback,boolean broadcast) {
+        eventQueue.offer(new LocalEvent(event,recipientId,eventCallback,broadcast));
     }
 
     @Override
     public Collection<SpatialObject> getAllObjects() {
-        return null;
+        return Collections.unmodifiableCollection(managedObjects.values());
     }
 
     @Override
     public Collection<RegionServer> getRegions() {
-        return null;
+        return Collections.unmodifiableCollection(managedServers);
     }
 
     @Override
