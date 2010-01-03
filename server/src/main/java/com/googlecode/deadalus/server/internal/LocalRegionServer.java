@@ -19,6 +19,7 @@ package com.googlecode.deadalus.server.internal;
 import com.googlecode.deadalus.RegionServer;
 import com.googlecode.deadalus.SpatialObject;
 import com.googlecode.deadalus.Coordinate;
+import com.googlecode.deadalus.geoutils.LengthUnit;
 import com.googlecode.deadalus.events.Event;
 import com.googlecode.deadalus.events.EventCallback;
 
@@ -52,6 +53,11 @@ public class LocalRegionServer implements RegionServer {
         for (RegionServer managedServer : managedServers) {
             managedServer.broadCast(event);
         }
+    }
+
+    @Override
+    public void broadCast(Event event, double radius, LengthUnit unit) {
+        
     }
 
     @Override

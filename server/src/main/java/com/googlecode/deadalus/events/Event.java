@@ -16,9 +16,37 @@
 
 package com.googlecode.deadalus.events;
 
+import com.googlecode.deadalus.Coordinate;
+
+import java.util.UUID;
+
 /**
  * Describes an Event within the Deadalus application
  */
-public interface Event<DataType> {
+public interface Event<PayloadType> {
+    /**
+     *
+     * @return  the type of this event
+     */
     String getType();
+
+    /**
+     * The Coordinate this event was generated at. In the Deadalus system all events originate from somewhere
+     *
+     * @return
+     */
+    Coordinate getOriginatingLocation();
+
+    /**
+     * The UUID of the SpatialObject the generated this event
+     *
+     * @return
+     */
+    UUID getOriginationObjectId();
+
+    /**
+     *
+     * @return  the event payload, this is application specific
+     */
+    PayloadType getPayload();
 }

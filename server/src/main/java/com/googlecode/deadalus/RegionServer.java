@@ -19,6 +19,7 @@ package com.googlecode.deadalus;
 import com.googlecode.deadalus.events.Event;
 import com.googlecode.deadalus.events.EventCallback;
 import com.googlecode.deadalus.Coordinate;
+import com.googlecode.deadalus.geoutils.LengthUnit;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -31,11 +32,22 @@ import java.util.UUID;
  */
 public interface RegionServer {
     /**
-     * Broadcast an event to all objects within this RegionServer
+     * Broadcast an event to all objects within this RegionServer (this also means that it's broadcasted to all
+     * RegionServer instances contained by this RegionServer)
      *
      * @param event
      */
     void broadCast(Event event);
+
+    /**
+     * Broadcast an event to all objects within the specified radius. The radius is calculated from the originatingLocation
+     * of the event
+     *
+     * @param event
+     * @param radius
+     * @param unit
+     */
+    void broadCast(Event event,double radius, LengthUnit unit);
 
     /**
      * Send an event directly to a recipient identified by the UUID
