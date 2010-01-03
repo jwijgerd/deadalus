@@ -27,6 +27,8 @@ import java.util.UUID;
 import java.util.Collection;
 import java.util.Collections;
 
+import ch.hsr.geohash.GeoHash;
+
 /**
  * The Root Region Server a.k.a. The World. This is a special RegionServer that provides access to all other
  * Region Servers. It basically keeps an index of all available servers
@@ -34,6 +36,13 @@ import java.util.Collections;
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 public class RootRegionServer implements RegionServer {
+    private static final GeoHash WORLD = GeoHash.fromGeohashString("");
+
+    @Override
+    public GeoHash getGeoHash() {
+        return WORLD;
+    }
+
     @Override
     public void broadCast(Event event) {
         //To change body of implemented methods use File | Settings | File Templates.

@@ -37,12 +37,22 @@ import ch.hsr.geohash.GeoHash;
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 public class LocalRegionServer implements RegionServer {
+    /** The hash that defines this server */
+    private final GeoHash geoHash;
     /** The queue that holds the events that still need to be processed */
     private final BlockingQueue<LocalEvent> eventQueue = new LinkedBlockingQueue<LocalEvent>();
     /** The map of SpatialObject instances, can be empty if all regions are handled by other RegionServers */
     private final Map<UUID,SpatialObject> managedObjects = new ConcurrentHashMap<UUID,SpatialObject>();
 
     private final List<RegionServer> managedServers = new CopyOnWriteArrayList<RegionServer>();
+
+    public LocalRegionServer(GeoHash geoHash) {
+        this.geoHash = geoHash;
+    }
+
+    public final GeoHash getGeoHash() {
+        return geoHash;
+    }
 
     @Override
     public void broadCast(Event event) {
@@ -57,7 +67,26 @@ public class LocalRegionServer implements RegionServer {
 
     @Override
     public void broadCast(Event event, double radius, LengthUnit unit) {
-        
+        // first check to see if this is at all for us
+        if(event.getOriginatingLocation().getGeoHash().within(this.geoHash)) {
+            // ok we have the hash now we need to find out if it is managed by one of the Region Server below us
+            for (RegionServer managedServer : managedServers) {
+                if(event.getOriginatingLocation().getGeoHash().within(managedServer.getGeoHash())) {
+                    // pass it to the other server
+                    managedServer.broadCast(event,radius,unit);
+                    return;
+                }
+            }
+            // ok so we should handle the event ourselves
+            // now go through all the SpatialObject instances
+            for (SpatialObject object : managedObjects.values()) {
+                // now use the distance function
+                if(object.getCurrentLocation().distance(event.getOriginatingLocation(),unit) < radius) {
+                    // bingo!
+                    sendLocal(event,object.getId(),null,false);
+                }
+            }
+        }
     }
 
     @Override

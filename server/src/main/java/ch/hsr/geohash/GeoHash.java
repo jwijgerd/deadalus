@@ -97,7 +97,15 @@ public final class GeoHash {
 		longitude = (lon_interval[0] + lon_interval[1]) / 2;
 
 		return new double []{latitude, longitude, lat_err, lon_err};
-	}		
+	}
+
+    /**
+     *
+     * @return  the precision of this GeoHash (between 0 and 12)
+     */
+    public final int getPrecision() {
+        return significantBits / 5;     
+    }
 
 
 	/**

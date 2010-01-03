@@ -6,14 +6,15 @@ package ch.hsr.geohash;
  */
 public final class WGS84Point {
 	private static final double EPSILON = 1e-12d;
-	private final double longitude;
-	private final double latitude;
 	static final double equatorRadius = 6378137d;
     static final double poleRadius = 6356752.3142d;
 	static final double f = 1 / 298.257223563d;
 	static final double degToRad = 0.0174532925199433d;
 	static final double equatorRadiusSquared = equatorRadius * equatorRadius;
 	static final double	poleRadiusSquared = poleRadius * poleRadius;
+
+    private final double longitude;
+	private final double latitude;
 
 	public WGS84Point(double latitude, double longitude) {
 		this.latitude = latitude;

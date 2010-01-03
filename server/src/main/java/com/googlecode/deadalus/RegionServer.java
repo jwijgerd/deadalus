@@ -24,6 +24,8 @@ import com.googlecode.deadalus.geoutils.LengthUnit;
 import java.util.Collection;
 import java.util.UUID;
 
+import ch.hsr.geohash.GeoHash;
+
 /**
  * A Region server contains SpatialObject instances but can also contain other RegionServer instances. These instances
  * are always within the boundary of the parent RegionServer.
@@ -31,6 +33,12 @@ import java.util.UUID;
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 public interface RegionServer {
+    /**
+     * The GeoHash 
+     * @return
+     */
+    GeoHash getGeoHash();
+
     /**
      * Broadcast an event to all objects within this RegionServer (this also means that it's broadcasted to all
      * RegionServer instances contained by this RegionServer)
