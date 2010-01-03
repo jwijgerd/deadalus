@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Joost van de Wijgerd
+ * Copyright 2010 Joost van de Wijgerd <joost@vdwbv.com>
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.googlecode.deadalus;
 
 import com.googlecode.deadalus.events.Event;
 import com.googlecode.deadalus.events.EventCallback;
-import com.googlecode.deadalus.geoutils.Coordinate;
+import com.googlecode.deadalus.Coordinate;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -63,5 +63,5 @@ public interface RegionServer {
      * @param arguments
      * @return
      */
-    void createObject(UUID clsId, Coordinate initialLocation, Object... arguments);
+    SpatialObject createObject(UUID clsId, Coordinate initialLocation, Object... arguments);
 }

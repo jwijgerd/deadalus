@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Joost van de Wijgerd
+ * Copyright 2010 Joost van de Wijgerd <joost@vdwbv.com>
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,11 +14,15 @@
  *    limitations under the License.
  */
 
-package com.googlecode.deadalus.geoutils;
+package com.googlecode.deadalus;
+
+import com.googlecode.deadalus.geoutils.LengthUnit;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+
+import ch.hsr.geohash.GeoHash;
 
 /**
  * Describes a Coordinate somewhere on earth. Immutable object
@@ -29,12 +33,12 @@ public final class Coordinate {
     private static final BigDecimal ONEHUNDREDANDEIGHTY = new BigDecimal(180.0d);
     private final BigDecimal latitude;
     private final BigDecimal longitude;
-    private final String geoHash;
+    private final GeoHash geoHash;
 
     public Coordinate(double latitude, double longitude) {
         this.latitude = new BigDecimal(latitude, LATLON_CONTEXT);
         this.longitude = new BigDecimal(longitude, LATLON_CONTEXT);
-        this.geoHash = GeoHash.encode(this.latitude.doubleValue(), this.longitude.doubleValue());
+        this.geoHash = GeoHash.withCharacterPrecision(this.latitude.doubleValue(), this.longitude.doubleValue(),12);
     }
 
     public final double getLatitude() {
@@ -46,7 +50,7 @@ public final class Coordinate {
     }
 
     public final String getGeoHash() {
-        return geoHash;
+        return geoHash.toBase32();
     }
 
     public final double distance(Coordinate to, LengthUnit unit) {

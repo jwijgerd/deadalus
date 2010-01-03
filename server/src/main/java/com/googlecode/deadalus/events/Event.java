@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Joost van de Wijgerd
+ * Copyright 2010 Joost van de Wijgerd <joost@vdwbv.com>
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,7 +17,8 @@
 package com.googlecode.deadalus.events;
 
 /**
- *
+ * Describes an Event within the Deadalus application
  */
-public interface Event {
+public interface Event<DataType> {
+    String getType();
 }
