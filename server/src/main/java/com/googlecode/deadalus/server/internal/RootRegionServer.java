@@ -73,4 +73,9 @@ public class RootRegionServer implements RegionServer {
         // find the correct regionserver and create the object
         return null;
     }
+
+    @Override
+    public void moveObject(UUID objectId, Coordinate toLocation) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

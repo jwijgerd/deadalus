@@ -19,9 +19,12 @@ package com.googlecode.deadalus.server.internal;
 import com.googlecode.deadalus.RegionServer;
 import com.googlecode.deadalus.SpatialObject;
 import com.googlecode.deadalus.Coordinate;
+import com.googlecode.deadalus.RegionServerRegistry;
 import com.googlecode.deadalus.geoutils.LengthUnit;
 import com.googlecode.deadalus.events.Event;
 import com.googlecode.deadalus.events.EventCallback;
+import com.googlecode.deadalus.events.LeaveEvent;
+import com.googlecode.deadalus.events.EnterEvent;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -45,6 +48,7 @@ public class LocalRegionServer implements RegionServer {
     private final Map<UUID,SpatialObject> managedObjects = new ConcurrentHashMap<UUID,SpatialObject>();
 
     private final List<RegionServer> managedServers = new CopyOnWriteArrayList<RegionServer>();
+
 
     public LocalRegionServer(GeoHash geoHash) {
         this.geoHash = geoHash;
@@ -120,5 +124,20 @@ public class LocalRegionServer implements RegionServer {
     @Override
     public SpatialObject createObject(UUID clsId, Coordinate initialLocation, Object... arguments) {
         return null;
+    }
+
+    @Override
+    public void moveObject(UUID objectId,Coordinate toLocation) {
+        if(managedObjects.containsKey(objectId)) {
+            // update the object and create events
+            SpatialObject object = managedObjects.get(objectId);
+            Coordinate fromLocation = object.getCurrentLocation();
+            broadCast(new LeaveEvent(objectId,object.getCurrentLocation(),toLocation));
+            // @todo: do I change the SpatialObject here or let it react to the EnterEvent?
+            broadCast(new EnterEvent(objectId,fromLocation,toLocation));
+        } else {
+            // find another region server that contains the
+
+        }
     }
 }

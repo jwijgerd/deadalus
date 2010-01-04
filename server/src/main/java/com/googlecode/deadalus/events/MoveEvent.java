@@ -19,35 +19,33 @@ package com.googlecode.deadalus.events;
 import com.googlecode.deadalus.Coordinate;
 
 import java.util.UUID;
-import java.io.Serializable;
 
 /**
- * Describes an Event within the Deadalus application
+ * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public interface Event<PayloadType> extends Serializable {
-    /**
-     *
-     * @return  the type of this event
-     */
-    String getType();
+public abstract class MoveEvent implements Event<Coordinate> {
+    protected final Coordinate from;
+    protected final Coordinate to;
+    protected final UUID subject;
 
-    /**
-     * The Coordinate this event was generated at. In the Deadalus system all events originate from somewhere
-     *
-     * @return
-     */
-    Coordinate getOriginatingLocation();
+    public MoveEvent(Coordinate from, Coordinate to, UUID subject) {
+        this.from = from;
+        this.to = to;
+        this.subject = subject;
+    }
 
-    /**
-     * The UUID of the SpatialObject the generated this event
-     *
-     * @return
-     */
-    UUID getOriginationObjectId();
+    @Override
+    public Coordinate getOriginatingLocation() {
+        return from;
+    }
 
-    /**
-     *
-     * @return  the event payload, this is application specific
-     */
-    PayloadType getPayload();
+    @Override
+    public UUID getOriginationObjectId() {
+        return subject;
+    }
+
+    @Override
+    public Coordinate getPayload() {
+        return to;
+    }
 }

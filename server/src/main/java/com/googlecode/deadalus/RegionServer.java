@@ -84,4 +84,6 @@ public interface RegionServer {
      * @return
      */
     SpatialObject createObject(UUID clsId, Coordinate initialLocation, Object... arguments);
+
+    void moveObject(UUID objectId,Coordinate toLocation);
 }
