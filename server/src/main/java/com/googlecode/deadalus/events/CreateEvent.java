@@ -24,6 +24,7 @@ import java.util.UUID;
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 public class CreateEvent implements Event<UUID> {
+    private final Long timeStamp;
     private final Coordinate location;
     private final UUID createdObject;
     private final UUID creator;
@@ -32,11 +33,17 @@ public class CreateEvent implements Event<UUID> {
         this.createdObject = createdObject;
         this.location = location;
         this.creator = creator;
+        this.timeStamp = System.currentTimeMillis();
     }
 
     @Override
     public String getType() {
         return "create";
+    }
+
+    @Override
+    public Long getTimestamp() {
+        return timeStamp;
     }
 
     @Override

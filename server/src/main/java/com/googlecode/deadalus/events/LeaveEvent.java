@@ -21,6 +21,8 @@ import com.googlecode.deadalus.Coordinate;
 import java.util.UUID;
 
 /**
+ * Leave a location (coordinate)
+ *
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 public class LeaveEvent extends MoveEvent {

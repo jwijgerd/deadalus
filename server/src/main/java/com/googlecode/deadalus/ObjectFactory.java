@@ -14,26 +14,15 @@
  *    limitations under the License.
  */
 
-package com.googlecode.deadalus.events;
-
-import com.googlecode.deadalus.Coordinate;
+package com.googlecode.deadalus;
 
 import java.util.UUID;
 
 /**
- * Enter a location
- *
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public class EnterEvent extends MoveEvent {
+public interface ObjectFactory {
+    UUID getClassIdentifier();
 
-    public EnterEvent(UUID subject, Coordinate from, Coordinate to) {
-        super(from, to, subject);
-    }
-
-    @Override
-    public String getType() {
-        return "enter";
-    }
-
+    SpatialObject createObject(Object... arguments);
 }

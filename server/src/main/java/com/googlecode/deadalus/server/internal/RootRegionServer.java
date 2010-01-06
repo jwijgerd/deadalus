@@ -59,11 +59,6 @@ public class RootRegionServer implements RegionServer {
     }
 
     @Override
-    public Collection<SpatialObject> getAllObjects() {
-        return Collections.emptyList();
-    }
-
-    @Override
     public Collection<RegionServer> getRegions() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }

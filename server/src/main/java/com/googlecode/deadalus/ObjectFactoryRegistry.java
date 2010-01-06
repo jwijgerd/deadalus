@@ -16,9 +16,11 @@
 
 package com.googlecode.deadalus;
 
+import java.util.UUID;
+
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 public interface ObjectFactoryRegistry {
-
+    ObjectFactory getObjectFactory(UUID clsid);
 }

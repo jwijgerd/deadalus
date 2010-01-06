@@ -26,7 +26,28 @@ import java.util.UUID;
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 public interface RegionServerRegistry {
+    /**
+     * Find the RegionServer that manages the object with the given UUID
+     *
+     * @param objectId
+     * @return
+     */
     RegionServer findByObjectId(UUID objectId);
-    RegionServer findByCoordinate(Coordinate coord);
+
+    /**
+     * Find the region that has the coordinate (each coordinate is ultimately managed by only one region server)
+     *
+     * @param coordinate
+     * @return
+     */
+    RegionServer findByCoordinate(Coordinate coordinate);
+
+    /**
+     * Find the RegionServer that manages this GeoHash. The type of Region depends on the precision of the GeoHash (i.e.
+     * the number of characters)
+     *
+     * @param geoHash
+     * @return
+     */
     RegionServer findByGeoHash(GeoHash geoHash);
 }

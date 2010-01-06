@@ -16,15 +16,9 @@
 
 package com.googlecode.deadalus.server.internal;
 
-import com.googlecode.deadalus.RegionServer;
-import com.googlecode.deadalus.SpatialObject;
-import com.googlecode.deadalus.Coordinate;
-import com.googlecode.deadalus.RegionServerRegistry;
+import com.googlecode.deadalus.*;
 import com.googlecode.deadalus.geoutils.LengthUnit;
-import com.googlecode.deadalus.events.Event;
-import com.googlecode.deadalus.events.EventCallback;
-import com.googlecode.deadalus.events.LeaveEvent;
-import com.googlecode.deadalus.events.EnterEvent;
+import com.googlecode.deadalus.events.*;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -44,14 +38,26 @@ public class LocalRegionServer implements RegionServer {
     private final GeoHash geoHash;
     /** The queue that holds the events that still need to be processed */
     private final BlockingQueue<LocalEvent> eventQueue = new LinkedBlockingQueue<LocalEvent>();
-    /** The map of SpatialObject instances, can be empty if all regions are handled by other RegionServers */
-    private final Map<UUID,SpatialObject> managedObjects = new ConcurrentHashMap<UUID,SpatialObject>();
-
-    private final List<RegionServer> managedServers = new CopyOnWriteArrayList<RegionServer>();
+    /** The map of LocalObject instances, can be empty if all regions are handled by other RegionServers */
+    private final Map<UUID,LocalObject> managedObjects = new ConcurrentHashMap<UUID,LocalObject>();
+    /** List of all RegionServer instances that are the children of this RegionServer (i.e. the precision is > this.GeoHash.precision)*/
+    private final Map<GeoHash,RegionServer> managedServers = new ConcurrentHashMap<GeoHash,RegionServer>();
+    /** The registry to be used to find other RegionServers that are not directly children of this RegionServer */
+    private RegionServerRegistry regionServerRegistry;
+    /** The registry of ObjectFactory instances, this maps ClassId UUID's to ObjectFactories that can be used to create object of that class */
+    private ObjectFactoryRegistry objectFactoryRegistry;
 
 
     public LocalRegionServer(GeoHash geoHash) {
         this.geoHash = geoHash;
+    }
+
+    public void setRegionServerRegistry(RegionServerRegistry regionServerRegistry) {
+        this.regionServerRegistry = regionServerRegistry;
+    }
+
+    public void setObjectFactoryRegistry(ObjectFactoryRegistry objectFactoryRegistry) {
+        this.objectFactoryRegistry = objectFactoryRegistry;
     }
 
     public final GeoHash getGeoHash() {
@@ -64,7 +70,7 @@ public class LocalRegionServer implements RegionServer {
         for (UUID uuid : managedObjects.keySet()) {
             sendLocal(event,uuid,null,true);
         }
-        for (RegionServer managedServer : managedServers) {
+        for (RegionServer managedServer : managedServers.values()) {
             managedServer.broadCast(event);
         }
     }
@@ -74,7 +80,7 @@ public class LocalRegionServer implements RegionServer {
         // first check to see if this is at all for us
         if(event.getOriginatingLocation().getGeoHash().within(this.geoHash)) {
             // ok we have the hash now we need to find out if it is managed by one of the Region Server below us
-            for (RegionServer managedServer : managedServers) {
+            for (RegionServer managedServer : managedServers.values()) {
                 if(event.getOriginatingLocation().getGeoHash().within(managedServer.getGeoHash())) {
                     // pass it to the other server
                     managedServer.broadCast(event,radius,unit);
@@ -100,7 +106,7 @@ public class LocalRegionServer implements RegionServer {
             sendLocal(event,recipientId,eventCallback,false);
         } else {
             // now we need to find it, we just send the event to the other servers and have them figure it out
-            for (RegionServer managedServer : managedServers) {
+            for (RegionServer managedServer : managedServers.values()) {
                 managedServer.send(event,recipientId,eventCallback);
             }
         }
@@ -112,32 +118,36 @@ public class LocalRegionServer implements RegionServer {
     }
 
     @Override
-    public Collection<SpatialObject> getAllObjects() {
-        return Collections.unmodifiableCollection(managedObjects.values());
-    }
-
-    @Override
     public Collection<RegionServer> getRegions() {
-        return Collections.unmodifiableCollection(managedServers);
+        return Collections.unmodifiableCollection(managedServers.values());
     }
 
     @Override
     public SpatialObject createObject(UUID clsId, Coordinate initialLocation, Object... arguments) {
-        return null;
+        ObjectFactory factory = objectFactoryRegistry.getObjectFactory(clsId);
+        SpatialObject object = factory.createObject(arguments);
+        LocalObject localObject = new LocalObject(object);
+        localObject.setCurrentLocation(initialLocation);
+        // @todo: need to know the UUID of the creator here. Get this from some kind of security context
+        broadCast(new CreateEvent(object.getId(),initialLocation,null));
+        return object;
     }
 
     @Override
     public void moveObject(UUID objectId,Coordinate toLocation) {
         if(managedObjects.containsKey(objectId)) {
             // update the object and create events
-            SpatialObject object = managedObjects.get(objectId);
-            Coordinate fromLocation = object.getCurrentLocation();
-            broadCast(new LeaveEvent(objectId,object.getCurrentLocation(),toLocation));
-            // @todo: do I change the SpatialObject here or let it react to the EnterEvent?
+            LocalObject localObject = managedObjects.get(objectId);
+            Coordinate fromLocation = localObject.getCurrentLocation();
+            broadCast(new LeaveEvent(objectId,localObject.getCurrentLocation(),toLocation));
+            localObject.setCurrentLocation(toLocation);
             broadCast(new EnterEvent(objectId,fromLocation,toLocation));
-        } else {
-            // find another region server that contains the
+        } else if(toLocation.getGeoHash().within(this.geoHash)) {
+            // try to find the child region server that manages the object
+            // @todo: does this do us any good or shall we go to the RegionServerRegistry immediately?
 
+        } else { // we were asked to move an object that was somewhere else entirely
+            // @todo: do we want to handle this or do we consider this to be an error?
         }
     }
 }

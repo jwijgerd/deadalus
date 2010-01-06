@@ -66,11 +66,6 @@ public interface RegionServer {
     void send(Event event, UUID recipientId, EventCallback eventCallback);
 
     /**
-     * @return All objects directly managed by this RegionServer
-     */
-    Collection<SpatialObject> getAllObjects();
-
-    /**
      * @return All child RegionServer
      */
     Collection<RegionServer> getRegions();

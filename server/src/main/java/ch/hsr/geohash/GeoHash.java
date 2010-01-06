@@ -104,7 +104,7 @@ public final class GeoHash {
      * @return  the precision of this GeoHash (between 0 and 12)
      */
     public final int getPrecision() {
-        return significantBits / 5;     
+        return ((int)significantBits) / 5;     
     }
 
 

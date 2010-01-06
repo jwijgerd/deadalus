@@ -21,19 +21,23 @@ import com.googlecode.deadalus.Coordinate;
 import java.util.UUID;
 
 /**
+ * Tick or HeartBeat event. Objects that want to run some logic periodically can listen to this event and execute
+ * their logic in the onEvent handler;
+ *
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public abstract class MoveEvent implements Event<Coordinate> {
+public class TickEvent implements Event<TickEvent.TickInterval> {
     private final Long timeStamp;
-    protected final Coordinate from;
-    protected final Coordinate to;
-    protected final UUID subject;
+    private final TickInterval interval;
 
-    public MoveEvent(Coordinate from, Coordinate to, UUID subject) {
-        this.from = from;
-        this.to = to;
-        this.subject = subject;
+    public TickEvent(long interval) {
         this.timeStamp = System.currentTimeMillis();
+        this.interval = new TickInterval(interval);
+    }
+
+    @Override
+    public String getType() {
+        return "tick";
     }
 
     @Override
@@ -43,16 +47,32 @@ public abstract class MoveEvent implements Event<Coordinate> {
 
     @Override
     public Coordinate getOriginatingLocation() {
-        return from;
+        return null;
     }
 
     @Override
     public UUID getOriginationObjectId() {
-        return subject;
+        return null;
     }
 
     @Override
-    public Coordinate getPayload() {
-        return to;
+    public TickInterval getPayload() {
+        return this.interval;
+    }
+
+    public class TickInterval {
+        private final long interval;
+
+        private TickInterval(long interval) {
+            this.interval = interval;
+        }
+
+        /**
+         *
+         * @return  The time to the next tick, can be negative! 
+         */
+        public long getTimeToNextTick() {
+            return (timeStamp + interval) - System.currentTimeMillis();
+        }
     }
 }

@@ -32,6 +32,14 @@ public interface Event<PayloadType> extends Serializable {
     String getType();
 
     /**
+     * Time this event was generated.
+     * Timestamp is in milliseconds (UTC timezone) since 1970
+     *
+     * @return
+     */
+    Long getTimestamp();
+
+    /**
      * The Coordinate this event was generated at. In the Deadalus system all events originate from somewhere
      *
      * @return
