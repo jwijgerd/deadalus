@@ -29,12 +29,12 @@ import ch.hsr.geohash.GeoHash;
  */
 public final class Coordinate {
     private static final double EPSILON = 1e-12d;
-	static final double equatorRadius = 6378137d;
-    static final double poleRadius = 6356752.3142d;
-	static final double f = 1 / 298.257223563d;
-	static final double degToRad = 0.0174532925199433d;
-	static final double equatorRadiusSquared = equatorRadius * equatorRadius;
-	static final double	poleRadiusSquared = poleRadius * poleRadius;
+	private static final double equatorRadius = 6378137d;
+    private static final double poleRadius = 6356752.3142d;
+	private static final double f = 1 / 298.257223563d;
+	private static final double degToRad = 0.0174532925199433d;
+	private static final double equatorRadiusSquared = equatorRadius * equatorRadius;
+	private static final double	poleRadiusSquared = poleRadius * poleRadius;
     private final double latitude;
     private final double longitude;
     private final GeoHash geoHash;
@@ -118,7 +118,7 @@ public final class Coordinate {
 
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -130,7 +130,7 @@ public final class Coordinate {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return geoHash.hashCode();
     }
 }
