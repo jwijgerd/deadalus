@@ -52,6 +52,7 @@ public class LocalObject implements SpatialObject {
     @Override
     public void onEvent(Event event) {
         // @todo: add some management code here: check invocations, time spend etc
+        delegate.onEvent(event);
     }
 
     // manipulate the internal properties

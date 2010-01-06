@@ -44,4 +44,24 @@ public class LocalEvent implements Serializable {
         this.callback = callback;
         this.broadcast = broadcast;
     }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public UUID getRecipient() {
+        return recipient;
+    }
+
+    public EventCallback getCallback() {
+        return callback;
+    }
+
+    public boolean isBroadcast() {
+        return broadcast;
+    }
+
+    public long getSeqNum() {
+        return seqNum;
+    }
 }

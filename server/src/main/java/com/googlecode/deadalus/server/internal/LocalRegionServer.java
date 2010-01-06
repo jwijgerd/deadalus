@@ -21,10 +21,8 @@ import com.googlecode.deadalus.geoutils.LengthUnit;
 import com.googlecode.deadalus.events.*;
 
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import ch.hsr.geohash.GeoHash;
 
@@ -34,6 +32,8 @@ import ch.hsr.geohash.GeoHash;
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 public class LocalRegionServer implements RegionServer {
+    /** default maximum number of workers to run, set to the number of processors (cores) + 1 */
+    private static final int MAX_WORKERS = Runtime.getRuntime().availableProcessors()+1;
     /** The hash that defines this server */
     private final GeoHash geoHash;
     /** The queue that holds the events that still need to be processed */
@@ -46,10 +46,33 @@ public class LocalRegionServer implements RegionServer {
     private RegionServerRegistry regionServerRegistry;
     /** The registry of ObjectFactory instances, this maps ClassId UUID's to ObjectFactories that can be used to create object of that class */
     private ObjectFactoryRegistry objectFactoryRegistry;
+    /** ExecutorService to execute the workers in */
+    private ExecutorService executorService;
+    /** The list of EventWorker instances that handle the events, this contains both running and stopped instances */
+    private final List<EventWorker> workers = new ArrayList<EventWorker>();
 
 
     public LocalRegionServer(GeoHash geoHash) {
         this.geoHash = geoHash;
+    }
+
+    public final void start() {
+        // create the workers
+        for(int i=0; i<MAX_WORKERS; i++) {
+            workers.add(new EventWorker());
+        }
+        // @todo: register with RegionServerRegistry?
+
+        // we're ready for action
+    }
+
+    public final void stop() {
+        // stop all workers
+        for (EventWorker worker : workers) {
+            worker.stop();
+        }
+
+        // we're done here
     }
 
     public void setRegionServerRegistry(RegionServerRegistry regionServerRegistry) {
@@ -58,6 +81,10 @@ public class LocalRegionServer implements RegionServer {
 
     public void setObjectFactoryRegistry(ObjectFactoryRegistry objectFactoryRegistry) {
         this.objectFactoryRegistry = objectFactoryRegistry;
+    }
+
+    public void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
     }
 
     public final GeoHash getGeoHash() {
@@ -115,6 +142,7 @@ public class LocalRegionServer implements RegionServer {
 
     private void sendLocal(Event event, UUID recipientId, EventCallback eventCallback,boolean broadcast) {
         eventQueue.offer(new LocalEvent(event,recipientId,eventCallback,broadcast));
+        ensureWorkers();
     }
 
     @Override
@@ -148,6 +176,79 @@ public class LocalRegionServer implements RegionServer {
 
         } else { // we were asked to move an object that was somewhere else entirely
             // @todo: do we want to handle this or do we consider this to be an error?
+        }
+    }
+
+    protected final void handleLocalEvent(final LocalEvent localEvent) {
+        // first find the object
+        LocalObject localObject = managedObjects.get(localEvent.getRecipient());
+        // can be null if this object was recently removed from this server!
+        if(localObject != null) {
+            // @todo: check if local object still has quota, for now just call the onEvent method
+            localObject.onEvent(localEvent.getEvent());
+        } else {
+            // @todo: handle events for objects that are not here anymore
+        }
+    }
+
+    /**
+     * Ensures there are enough running workers to handle
+     */
+    private void ensureWorkers() {
+        // check the eventQueue
+        if(eventQueue.size() > 0) {
+            // start a worker if possible
+            for (EventWorker worker : workers) {
+                if(!worker.isRunning()) {
+                    executorService.submit(worker);
+                }
+            }
+        }
+    }
+
+    private final class EventWorker implements Callable<LocalEvent> {
+        private final AtomicReference<Thread> runningThread = new AtomicReference<Thread>(null);
+        private volatile boolean running = true;
+
+        /**
+         * Handles LocalEvent instances from the eventQueue. A LocalEvent is always intended for an object that is
+         * managed by this instance of the server.
+         *
+         * @return
+         * @throws Exception
+         */
+        @Override
+        public LocalEvent call() throws Exception {
+            // store the calling thread to be able to interrupt later.
+            if(!runningThread.compareAndSet(null,Thread.currentThread())) {
+                // somehow this worker was executed before it was finished
+                // @todo: do we throw an exception or ?
+            }
+            while(running) {
+                LocalEvent localEvent = null;
+                try {
+                    localEvent = eventQueue.poll(60, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    // this will probably mean we interrupted the thread so running will become false
+                    localEvent = null;
+                }
+                if(localEvent == null) { // there were no events for 60 seconds, die
+                    running = false;
+                } else {
+                    // handle the event...
+                    handleLocalEvent(localEvent);
+                }
+            }
+            runningThread.compareAndSet(Thread.currentThread(),null);
+            return null;
+        }
+
+        private boolean isRunning() {
+            return this.runningThread.get() != null;
+        }
+
+        private void stop() {
+            if(this.runningThread.get() != null) this.runningThread.get().interrupt();
         }
     }
 }
