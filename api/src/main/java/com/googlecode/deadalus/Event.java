@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.googlecode.deadalus.events;
+package com.googlecode.deadalus;
 
 import com.googlecode.deadalus.Coordinate;
 

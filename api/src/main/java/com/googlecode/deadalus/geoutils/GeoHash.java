@@ -155,6 +155,23 @@ public final class GeoHash {
 		return point;
 	}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GeoHash geoHash = (GeoHash) o;
+
+        if (!hash.equals(geoHash.hash)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return hash.hashCode();
+    }
+
     /**
 	 * returns true if this is within the given geohash bounding box.
 	 */

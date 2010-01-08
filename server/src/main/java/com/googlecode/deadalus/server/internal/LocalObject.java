@@ -18,7 +18,7 @@ package com.googlecode.deadalus.server.internal;
 
 import com.googlecode.deadalus.SpatialObject;
 import com.googlecode.deadalus.Coordinate;
-import com.googlecode.deadalus.events.Event;
+import com.googlecode.deadalus.Event;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;

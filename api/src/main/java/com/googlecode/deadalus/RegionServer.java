@@ -16,8 +16,8 @@
 
 package com.googlecode.deadalus;
 
-import com.googlecode.deadalus.events.Event;
-import com.googlecode.deadalus.events.EventCallback;
+import com.googlecode.deadalus.Event;
+import com.googlecode.deadalus.EventCallback;
 import com.googlecode.deadalus.Coordinate;
 import com.googlecode.deadalus.geoutils.LengthUnit;
 

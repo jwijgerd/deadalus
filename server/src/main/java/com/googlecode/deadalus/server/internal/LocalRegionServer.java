@@ -25,11 +25,14 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.springframework.beans.factory.annotation.Configurable;
+
 /**
  * Implememtation of a RegionServer that is running in the local JVM.
  *
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
+@Configurable()
 public class LocalRegionServer implements RegionServer {
     /** default maximum number of workers to run, set to the number of processors (cores) + 1 */
     private static final int MAX_WORKERS = Runtime.getRuntime().availableProcessors()+1;

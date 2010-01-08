@@ -16,8 +16,8 @@
 
 package com.googlecode.deadalus.server.internal;
 
-import com.googlecode.deadalus.events.Event;
-import com.googlecode.deadalus.events.EventCallback;
+import com.googlecode.deadalus.Event;
+import com.googlecode.deadalus.EventCallback;
 
 import java.io.Serializable;
 import java.util.UUID;

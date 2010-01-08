@@ -16,13 +16,11 @@
 
 package com.googlecode.deadalus.server.internal;
 
-import com.googlecode.deadalus.RegionServer;
-import com.googlecode.deadalus.SpatialObject;
-import com.googlecode.deadalus.Coordinate;
 import com.googlecode.deadalus.geoutils.LengthUnit;
 import com.googlecode.deadalus.geoutils.GeoHash;
-import com.googlecode.deadalus.events.Event;
-import com.googlecode.deadalus.events.EventCallback;
+import com.googlecode.deadalus.Event;
+import com.googlecode.deadalus.*;
+import com.googlecode.deadalus.EventCallback;
 
 import java.util.UUID;
 import java.util.Collection;

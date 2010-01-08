@@ -14,12 +14,34 @@
  *    limitations under the License.
  */
 
-package com.googlecode.deadalus.events;
+package com.googlecode.deadalus;
+
+
+import java.util.UUID;
 
 /**
- * Asynchronous Callback interface to handle event responses
- *
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public interface EventCallback {
+public interface SpatialObject {
+    /**
+     * @return The globally unique identifier of this object instance
+     */
+    UUID getId();
+
+    /**
+     * @return The class id of this object
+     */
+    UUID getClsId();
+
+    /**
+     * @return The current location (i.e. last known) of this object
+     */
+    Coordinate getCurrentLocation();
+
+    /**
+     * Event handling method called by the system
+     *
+     * @param event
+     */
+    void onEvent(Event event);
 }

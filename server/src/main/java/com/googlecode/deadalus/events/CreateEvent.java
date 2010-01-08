@@ -17,6 +17,7 @@
 package com.googlecode.deadalus.events;
 
 import com.googlecode.deadalus.Coordinate;
+import com.googlecode.deadalus.Event;
 
 import java.util.UUID;
 
