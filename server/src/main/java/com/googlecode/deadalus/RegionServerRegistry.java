@@ -16,7 +16,7 @@
 
 package com.googlecode.deadalus;
 
-import ch.hsr.geohash.GeoHash;
+import com.googlecode.deadalus.geoutils.GeoHash;
 
 import java.util.UUID;
 

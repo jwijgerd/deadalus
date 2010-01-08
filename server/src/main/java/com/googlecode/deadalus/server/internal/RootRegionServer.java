@@ -20,14 +20,12 @@ import com.googlecode.deadalus.RegionServer;
 import com.googlecode.deadalus.SpatialObject;
 import com.googlecode.deadalus.Coordinate;
 import com.googlecode.deadalus.geoutils.LengthUnit;
+import com.googlecode.deadalus.geoutils.GeoHash;
 import com.googlecode.deadalus.events.Event;
 import com.googlecode.deadalus.events.EventCallback;
 
 import java.util.UUID;
 import java.util.Collection;
-import java.util.Collections;
-
-import ch.hsr.geohash.GeoHash;
 
 /**
  * The Root Region Server a.k.a. The World. This is a special RegionServer that provides access to all other

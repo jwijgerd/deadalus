@@ -18,13 +18,12 @@ package com.googlecode.deadalus.server.internal;
 
 import com.googlecode.deadalus.*;
 import com.googlecode.deadalus.geoutils.LengthUnit;
+import com.googlecode.deadalus.geoutils.GeoHash;
 import com.googlecode.deadalus.events.*;
 
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
-
-import ch.hsr.geohash.GeoHash;
 
 /**
  * Implememtation of a RegionServer that is running in the local JVM.

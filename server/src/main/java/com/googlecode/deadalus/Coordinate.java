@@ -17,12 +17,7 @@
 package com.googlecode.deadalus;
 
 import com.googlecode.deadalus.geoutils.LengthUnit;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-
-import ch.hsr.geohash.GeoHash;
+import com.googlecode.deadalus.geoutils.GeoHash;
 
 /**
  * Describes a Coordinate somewhere on earth. Immutable object

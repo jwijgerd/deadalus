@@ -24,7 +24,7 @@ import com.googlecode.deadalus.geoutils.LengthUnit;
 import java.util.Collection;
 import java.util.UUID;
 
-import ch.hsr.geohash.GeoHash;
+import com.googlecode.deadalus.geoutils.GeoHash;
 
 /**
  * A Region server contains SpatialObject instances but can also contain other RegionServer instances. These instances

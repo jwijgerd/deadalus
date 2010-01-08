@@ -20,6 +20,7 @@ import org.testng.annotations.Test;
 import org.testng.Assert;
 import com.googlecode.deadalus.Coordinate;
 import com.googlecode.deadalus.geoutils.LengthUnit;
+import com.googlecode.deadalus.geoutils.GeoHash;
 
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
@@ -31,7 +32,7 @@ public class GeoHashTests {
         GeoHash b1 = GeoHash.fromGeohashString("b1");
         Assert.assertTrue(b1.within(b));
         Assert.assertFalse(b.within(b1));
-        WGS84Point[] bbox = b.getBoundingBoxPoints();
+        GeoHash.Point[] bbox = b.getBoundingBoxPoints();
         Assert.assertEquals(bbox.length,2);
         System.out.print("b left-top");
         System.out.println(bbox[0]);
@@ -54,25 +55,27 @@ public class GeoHashTests {
     @Test
     public void testBase32() {
         GeoHash b = GeoHash.fromGeohashString("b1c");
-        Assert.assertEquals("b1c",b.toBase32());
+        Assert.assertEquals("b1c",b.getHash());
         Assert.assertEquals(b.getPrecision(),3);
         GeoHash c = GeoHash.fromGeohashString("b1c2f");
-        Assert.assertEquals("b1c2f",c.toBase32());
+        Assert.assertEquals("b1c2f",c.getHash());
         Assert.assertEquals(c.getPrecision(),5);
-        Assert.assertEquals(GeoHash.fromGeohashString(""),0);
+        Assert.assertEquals(GeoHash.fromGeohashString("").getPrecision(),0);
     }
 
     @Test
     public void testBoxSize() {
         GeoHash gh = GeoHash.withCharacterPrecision(52.376817d,4.896619d,12);
-        String gh12 = gh.toBase32();
+        String gh12 = gh.getHash();
         int i = 12;
         while(i >= 0) {
             String gh11 = gh12.substring(0,i);
             Assert.assertEquals(GeoHash.fromGeohashString(gh11).getPrecision(),i);
             System.out.println(gh11);
-            WGS84Point[] bbox = GeoHash.fromGeohashString(gh11).getBoundingBoxPoints();
-            System.out.println("dist = "+WGS84Point.distanceInMeters(bbox[0],bbox[1]));
+            GeoHash.Point[] bbox = GeoHash.fromGeohashString(gh11).getBoundingBoxPoints();
+            Coordinate from = new Coordinate(bbox[0].getLatitude(),bbox[0].getLongitude());
+            Coordinate to = new Coordinate(bbox[1].getLatitude(),bbox[1].getLongitude());
+            System.out.println("dist = "+from.distance(to,LengthUnit.KILOMETRES));
             i-=1;
         }
     }
@@ -81,15 +84,20 @@ public class GeoHashTests {
     public void testDistance() {
         GeoHash gh = GeoHash.withCharacterPrecision(52.376817d,4.896619d,12);
         GeoHash gh2 = GeoHash.withCharacterPrecision(52.373936d,4.908464d,12);
+        Coordinate from = new Coordinate(gh.getPoint().getLatitude(),gh.getPoint().getLongitude());
+        Coordinate to = new Coordinate(gh2.getPoint().getLatitude(),gh2.getPoint().getLongitude());
         long start = System.nanoTime();
         for(int i=0; i<1000; i++) {
-            WGS84Point.distanceInMeters(gh.getPoint(),gh2.getPoint());
+            from.distance(to,LengthUnit.KILOMETRES);
         }
         long total = System.nanoTime() - start;
         System.out.println("1000 calculations in "+total+" nanoSecs");
-        Coordinate from = new Coordinate(52.376817d,4.896619d);
-        Coordinate to = new Coordinate(52.373936d,4.908464d);
-        Assert.assertEquals(WGS84Point.distanceInMeters(gh.getPoint(),gh2.getPoint()),from.distance(to,LengthUnit.KILOMETRES)*1000d);
+    }
+
+    @Test
+    public void testPrecision() {
+        GeoHash gh = GeoHash.fromGeohashString("bm1");
+        Assert.assertEquals(gh.getPrecision(),3);
 
     }
 }
