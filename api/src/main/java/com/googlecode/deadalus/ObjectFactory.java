@@ -22,7 +22,18 @@ import java.util.UUID;
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 public interface ObjectFactory {
+    /**
+     * The unique identifier for this factory
+     *
+     * @return
+     */
     UUID getClassIdentifier();
 
+    /**
+     * Create an object with the given arguments
+     *
+     * @param arguments
+     * @return
+     */
     SpatialObject createObject(Object... arguments);
 }
