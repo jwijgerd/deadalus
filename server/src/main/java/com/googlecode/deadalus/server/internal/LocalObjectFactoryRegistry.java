@@ -14,36 +14,19 @@
  *    limitations under the License.
  */
 
-package com.googlecode.deadalus;
+package com.googlecode.deadalus.server.internal;
 
+import com.googlecode.deadalus.ObjectFactoryRegistry;
+import com.googlecode.deadalus.ObjectFactory;
 
 import java.util.UUID;
 
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public interface SpatialObject {
-    /**
-     * @return The globally unique identifier of this object instance
-     */
-    UUID getId();
-
-    /**
-     * @return The class id of this object
-     */
-    UUID getClsId();
-
-    /**
-     * Should be used to interact with the environment, will be set by the Runtime RegionServer.
-     *
-     * @param context
-     */
-    void setContext(Context context);
-
-    /**
-     * Event handling method called by the system
-     *
-     * @param event
-     */
-    void onEvent(Event event);
+public class LocalObjectFactoryRegistry implements ObjectFactoryRegistry {
+    @Override
+    public ObjectFactory getObjectFactory(UUID clsid) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

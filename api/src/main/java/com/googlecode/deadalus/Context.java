@@ -16,34 +16,16 @@
 
 package com.googlecode.deadalus;
 
-
-import java.util.UUID;
-
 /**
+ * The Context class should be used by SpatialObject implementations to interact with the Runtime environment. When a
+ * SpatialObject is created (either from scratch or after deserailisation) the Context will be set via the setContext
+ * method.
+ *
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public interface SpatialObject {
+public interface Context {
     /**
-     * @return The globally unique identifier of this object instance
+     * @return The current location (i.e. last known) of this object
      */
-    UUID getId();
-
-    /**
-     * @return The class id of this object
-     */
-    UUID getClsId();
-
-    /**
-     * Should be used to interact with the environment, will be set by the Runtime RegionServer.
-     *
-     * @param context
-     */
-    void setContext(Context context);
-
-    /**
-     * Event handling method called by the system
-     *
-     * @param event
-     */
-    void onEvent(Event event);
+    Coordinate getCurrentLocation();
 }

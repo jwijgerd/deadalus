@@ -27,7 +27,7 @@ import java.util.Collection;
 
 /**
  * The Root Region Server a.k.a. The World. This is a special RegionServer that provides access to all other
- * Region Servers. It basically keeps an index of all available servers
+ * Region Servers. 
  *
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */

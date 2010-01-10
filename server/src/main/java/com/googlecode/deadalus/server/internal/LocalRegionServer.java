@@ -26,6 +26,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Implememtation of a RegionServer that is running in the local JVM.
@@ -58,7 +59,7 @@ public class LocalRegionServer implements RegionServer {
         this.geoHash = geoHash;
     }
 
-    public final void start() {
+    public void start() {
         // create the workers
         for(int i=0; i<MAX_WORKERS; i++) {
             workers.add(new EventWorker());
@@ -68,7 +69,7 @@ public class LocalRegionServer implements RegionServer {
         // we're ready for action
     }
 
-    public final void stop() {
+    public void stop() {
         // stop all workers
         for (EventWorker worker : workers) {
             worker.stop();
@@ -77,19 +78,22 @@ public class LocalRegionServer implements RegionServer {
         // we're done here
     }
 
+    @Autowired(required = true)
     public void setRegionServerRegistry(RegionServerRegistry regionServerRegistry) {
         this.regionServerRegistry = regionServerRegistry;
     }
 
+    @Autowired(required = true)
     public void setObjectFactoryRegistry(ObjectFactoryRegistry objectFactoryRegistry) {
         this.objectFactoryRegistry = objectFactoryRegistry;
     }
 
+    @Autowired(required = true)
     public void setExecutorService(ExecutorService executorService) {
         this.executorService = executorService;
     }
 
-    public final GeoHash getGeoHash() {
+    public GeoHash getGeoHash() {
         return geoHash;
     }
 
@@ -118,7 +122,7 @@ public class LocalRegionServer implements RegionServer {
             }
             // ok so we should handle the event ourselves
             // now go through all the SpatialObject instances
-            for (SpatialObject object : managedObjects.values()) {
+            for (LocalObject object : managedObjects.values()) {
                 // now use the distance function
                 if(object.getCurrentLocation().distance(event.getOriginatingLocation(),unit) < radius) {
                     // bingo!

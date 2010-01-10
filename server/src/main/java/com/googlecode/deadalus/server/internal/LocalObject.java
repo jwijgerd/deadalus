@@ -19,6 +19,7 @@ package com.googlecode.deadalus.server.internal;
 import com.googlecode.deadalus.SpatialObject;
 import com.googlecode.deadalus.Coordinate;
 import com.googlecode.deadalus.Event;
+import com.googlecode.deadalus.Context;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -26,12 +27,13 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public class LocalObject implements SpatialObject {
+public class LocalObject implements SpatialObject, Context {
     private final SpatialObject delegate;
     private final AtomicReference<Coordinate> currentLocation = new AtomicReference<Coordinate>(null);
 
     public LocalObject(SpatialObject delegate) {
         this.delegate = delegate;
+        this.delegate.setContext(this);
     }
 
     @Override
@@ -42,6 +44,11 @@ public class LocalObject implements SpatialObject {
     @Override
     public UUID getClsId() {
         return delegate.getClsId();
+    }
+
+    @Override
+    public void setContext(Context context) {
+        // do nothing
     }
 
     @Override

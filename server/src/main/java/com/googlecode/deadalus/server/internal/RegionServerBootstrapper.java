@@ -14,36 +14,34 @@
  *    limitations under the License.
  */
 
-package com.googlecode.deadalus;
+package com.googlecode.deadalus.server.internal;
 
+import com.googlecode.deadalus.geoutils.GeoHash;
 
-import java.util.UUID;
+import java.io.File;
 
 /**
+ * Helper class to bootstrap RegionServer instances on startup
+ *
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public interface SpatialObject {
-    /**
-     * @return The globally unique identifier of this object instance
-     */
-    UUID getId();
+public class RegionServerBootstrapper {
+    private GeoHash localRoot;
+    private File snapshotDirectory;
 
-    /**
-     * @return The class id of this object
-     */
-    UUID getClsId();
+    public void initilize() {
 
-    /**
-     * Should be used to interact with the environment, will be set by the Runtime RegionServer.
-     *
-     * @param context
-     */
-    void setContext(Context context);
+    }
 
-    /**
-     * Event handling method called by the system
-     *
-     * @param event
-     */
-    void onEvent(Event event);
+    public void destoy() {
+
+    }
+
+    public void setLocalRoot(String geoHash) {
+        this.localRoot = GeoHash.fromGeohashString(geoHash);
+    }
+
+    public void setSnapshotDirectory(File snapshotDirectory) {
+        this.snapshotDirectory = snapshotDirectory;
+    }
 }
