@@ -50,4 +50,11 @@ public interface RegionServerRegistry {
      * @return
      */
     RegionServer findByGeoHash(GeoHash geoHash);
+
+    /**
+     * Register a server
+     * 
+     * @param server
+     */
+    void register(RegionServer server);
 }

@@ -22,23 +22,38 @@ import com.googlecode.deadalus.Coordinate;
 import com.googlecode.deadalus.geoutils.GeoHash;
 
 import java.util.UUID;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 public class LocalRegionServerRegistry implements RegionServerRegistry {
+    private final ConcurrentHashMap<GeoHash,RegionServer> registeredServers = new ConcurrentHashMap<GeoHash,RegionServer>();
+
     @Override
     public RegionServer findByObjectId(UUID objectId) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // @todo: need some way to query the cluster
+        return null;
     }
 
     @Override
     public RegionServer findByCoordinate(Coordinate coordinate) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return findByGeoHash(coordinate.getGeoHash());
     }
 
     @Override
     public RegionServer findByGeoHash(GeoHash geoHash) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        for (Map.Entry<GeoHash, RegionServer> entry : registeredServers.entrySet()) {
+            if(geoHash.within(entry.getKey())) return entry.getValue();
+        }
+        // @todo: this is not possible
+        return null;
+    }
+
+    @Override
+    public void register(RegionServer server) {
+        // @todo: notify cluster of new member
+        registeredServers.put(server.getGeoHash(),server);
     }
 }

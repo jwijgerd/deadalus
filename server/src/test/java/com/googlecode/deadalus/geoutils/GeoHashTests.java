@@ -98,6 +98,13 @@ public class GeoHashTests {
     public void testPrecision() {
         GeoHash gh = GeoHash.fromGeohashString("bm1");
         Assert.assertEquals(gh.getPrecision(),3);
+    }
 
+    @Test
+    public void testWithin() {
+        GeoHash bcd = GeoHash.fromGeohashString("bcd");
+        GeoHash bcd2 = GeoHash.fromGeohashString("bcd");
+        Assert.assertTrue(bcd.within(bcd2));
+        Assert.assertTrue(bcd2.within(bcd));
     }
 }

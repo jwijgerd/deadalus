@@ -6,16 +6,51 @@
     <packaging>war</packaging>
     <version>0.1.0-SNAPSHOT</version>
     <name>Deadalus :: Web App</name>
-    <url>http://maven.apache.org</url>
+    <url>http://deadalus.googlecode.com/</url>
     <parent>
         <groupId>com.googlecode.deadalus</groupId>
         <artifactId>deadalus-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
     <dependencies>
-
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>deadalus-webapp</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.3</version>
+                <configuration>
+                    <aspectLibraries>
+                        <aspectLibrary>
+                            <groupId>org.springframework</groupId>
+                            <artifactId>spring-aspects</artifactId>
+                        </aspectLibrary>
+                    </aspectLibraries>
+                    <complianceLevel>1.6</complianceLevel>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
     </build>
 </project>

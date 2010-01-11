@@ -17,6 +17,7 @@
 package com.googlecode.deadalus.server.internal;
 
 import com.googlecode.deadalus.geoutils.GeoHash;
+import com.googlecode.deadalus.RegionServerRegistry;
 
 import java.io.File;
 
@@ -28,9 +29,20 @@ import java.io.File;
 public class RegionServerBootstrapper {
     private GeoHash localRoot;
     private File snapshotDirectory;
+    private final RegionServerRegistry regionServerRegistry;
 
-    public void initilize() {
+    public RegionServerBootstrapper(RegionServerRegistry regionServerRegistry) {
+        this.regionServerRegistry = regionServerRegistry;
+    }
 
+    public void init() {
+        // @todo: check if there is a snapthot available
+
+        // initialize the servers, local registry should be empty right now
+        LocalRegionServer server = new LocalRegionServer(localRoot);
+        regionServerRegistry.register(server);
+        server.start();
+        
     }
 
     public void destoy() {

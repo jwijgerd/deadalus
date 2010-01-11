@@ -90,7 +90,7 @@ public final class Coordinate {
 
 		if (iterLimit == 0)
 			return Double.NaN;
-		double uSquared = cosSqAlpha * (equatorRadius * equatorRadius - poleRadius * poleRadius) / poleRadiusSquared;
+		double uSquared = cosSqAlpha * (equatorRadiusSquared - poleRadiusSquared * poleRadius) / poleRadiusSquared;
 		double A = 1
 				+ uSquared
 				/ 16384

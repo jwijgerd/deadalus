@@ -39,11 +39,30 @@
 
     <bean id="objectFactoryRegistry" class="com.googlecode.deadalus.server.internal.LocalObjectFactoryRegistry"/>
 
-    <bean id="bootstrapper" class="com.googlecode.deadalus.server.internal.RegionServerBootstrapper" init-method="initilize" destroy-method="destoy">
+    <bean id="bootstrapper" class="com.googlecode.deadalus.server.internal.RegionServerBootstrapper" init-method="init"
+          destroy-method="destoy">
+        <constructor-arg index="0" ref="regionServerRegistry"/>
         <property name="localRoot" value="${local.regionserver.root.geoHash"/>
         <property name="snapshotDirectory" value="${local.regionserver.snapshotdir}"/>
     </bean>
 
+    <bean id="executor" class="java.util.concurrent.ThreadPoolExecutor" destroy-method="shutdown">
+        <constructor-arg index="0" value="10"/>
+        <constructor-arg index="1" value="0x7fffffff"/>
+        <constructor-arg index="2" value="60"/>
+        <constructor-arg index="3">
+            <bean name="java.util.concurrent.TimeUnit.SECONDS"
+                  class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+        </constructor-arg>
+        <constructor-arg index="4">
+            <bean class="java.util.concurrent.SynchronousQueue"/>
+        </constructor-arg>
+        <constructor-arg index="5">
+            <bean class="org.springframework.scheduling.concurrent.CustomizableThreadFactory">
+                <constructor-arg index="0" value="REGIONSERVER"/>
+            </bean>
+        </constructor-arg>
+    </bean>
 
 
 </beans>
