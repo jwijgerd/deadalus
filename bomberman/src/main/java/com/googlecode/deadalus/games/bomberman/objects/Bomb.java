@@ -76,6 +76,9 @@ public class Bomb implements DeadalusObject {
             // for now we can only explode once and then we become inactive
         } else if("tick".equals(event.getType())) {
             // @todo: what do we want to do on a tick?
+        } else if("damage".equals(event.getType())) {
+            // we've done damage! yes ;-)
+            
         }
     }
 }

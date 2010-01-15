@@ -22,8 +22,8 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * The Context class should be used by SpatialObject implementations to interact with the Runtime environment. When a
- * SpatialObject is created (either from scratch or after deserailisation) the Context will be set via the setContext
+ * The Context class should be used by DeadalusObject implementations to interact with the Runtime environment. When a
+ * DeadalusObject is created (either from scratch or after deserailisation) the Context will be set via the setContext
  * method.
  *
  * @author Joost van de Wijgerd <joost@vdwbv.com>

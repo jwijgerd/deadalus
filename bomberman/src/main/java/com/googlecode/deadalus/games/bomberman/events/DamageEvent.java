@@ -33,12 +33,12 @@ public class DamageEvent extends EventBase implements Event<DamageEvent.DamageIn
     }
 
     @Override
-    public String getType() {
+    public final String getType() {
         return "damage";
     }
 
     @Override
-    public DamageInfo getPayload() {
+    public final DamageInfo getPayload() {
         return payload;
     }
 

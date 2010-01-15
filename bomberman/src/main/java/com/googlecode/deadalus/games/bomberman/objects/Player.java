@@ -68,7 +68,7 @@ public class Player implements DeadalusObject {
             double distanceToBlast = context.getCurrentLocation().distance(event.getOriginatingLocation(),LengthUnit.METRES);
             int damage = ((ExplosionEvent)event).getPayload().calculateDamage(distanceToBlast,LengthUnit.METRES);
             // now we need to apply the damage
-            applyDamage((ExplosionEvent)event,damage);
+            if(damage > 0) applyDamage((ExplosionEvent)event,damage);
         } else if("tick".equals(event.getType())) {
             // @todo: what do we want to do on a tick?
         }
