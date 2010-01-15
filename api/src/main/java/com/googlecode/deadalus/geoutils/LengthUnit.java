@@ -27,6 +27,9 @@ public enum LengthUnit {
         public double toKilometres(double l) {
             return l * 1.609344d;
         }
+        public double toMetres(double l) {
+            return l * 1609.344d;
+        }
         public double toNauticalMiles(double l) {
             return l * 0.868976242d;
         }
@@ -42,11 +45,32 @@ public enum LengthUnit {
         public double toKilometres(double l) {
             return l;
         }
+        public double toMetres(double l) {
+            return l*1000;
+        }
         public double toNauticalMiles(double l) {
             return l * 0.539956803d;
         }
         public double convert(double l, LengthUnit u) {
             return u.toKilometres(l);
+        }
+    },
+
+    METRES {
+        public double toMiles(double l) {
+            return l * 0.000621371192d;
+        }
+        public double toKilometres(double l) {
+            return l/1000;
+        }
+        public double toMetres(double l) {
+            return l;
+        }
+        public double toNauticalMiles(double l) {
+            return l * 0.000539956803d;
+        }
+        public double convert(double l, LengthUnit u) {
+            return u.toMetres(l);
         }
     },
 
@@ -56,6 +80,9 @@ public enum LengthUnit {
         }
         public double toKilometres(double l) {
             return l * 1.85200d;
+        }
+        public double toMetres(double l) {
+            return l * 1852.00d;
         }
         public double toNauticalMiles(double l) {
             return l;
@@ -74,6 +101,10 @@ public enum LengthUnit {
     }
 
     public double toKilometres(double length) {
+        throw new AbstractMethodError();
+    }
+
+    public double toMetres(double length) {
         throw new AbstractMethodError();
     }
 

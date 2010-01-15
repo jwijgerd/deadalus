@@ -49,17 +49,20 @@ public class LocalObjectFactoryRegistry implements ObjectFactoryRegistry, Applic
 
     public void addJarFile(File jarFile) throws IOException {
         // add the file to the classloader
+        if(jarFile.exists()) System.out.println("jarFile = " + jarFile);
         classLoader.addJarFile(jarFile);
         // get the resources
         Resource springCtxResource = new ClassPathResource("META-INF/factories.xml",classLoader);
+        // @todo: do we need to reset this at the end?
+        Thread.currentThread().setContextClassLoader(classLoader);
         if(springCtxResource.exists()) {
             // create the spring context for the application
-            String[] locations = new String[] {springCtxResource.getFilename()};
+            String[] locations = new String[] {"/META-INF/factories.xml"};
             ClassPathXmlApplicationContext springCtx = new ClassPathXmlApplicationContext(locations,parentCtx);
             Map<String,ObjectFactory> factories = springCtx.getBeansOfType(ObjectFactory.class);
             // now register them with the registry
             for (Map.Entry<String, ObjectFactory> factoryEntry : factories.entrySet()) {
-                UUID clsId = UUID.fromString(factoryEntry.getKey());
+                UUID clsId = factoryEntry.getValue().getClassIdentifier();
                 // double check if we already had a factory registered for this UUID
                 if(!registry.containsKey(clsId)) {
                     registry.put(clsId,factoryEntry.getValue());
@@ -78,12 +81,13 @@ public class LocalObjectFactoryRegistry implements ObjectFactoryRegistry, Applic
 
     private final class JarFileLoader extends URLClassLoader {
 
-        public JarFileLoader(URL[] urls, ClassLoader parent) {
-            super(urls, parent);
+        public JarFileLoader(URL[] urls,ClassLoader parent) {
+            super(urls,parent);
         }
 
         void addJarFile(File jarFile) throws IOException {
-            String urlPath = "jar:file://" + jarFile.getAbsoluteFile() + "!/";
+            // String urlPath = "jar:file://" + jarFile.getAbsoluteFile() + "!/";
+            String urlPath = "file:"+jarFile.getAbsoluteFile();
             addURL (new URL (urlPath));
         }
     }
