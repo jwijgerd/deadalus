@@ -26,14 +26,14 @@ import java.util.UUID;
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 @Service()
-public class PlayerObjectFactory implements ObjectFactory {
+public class PlayerObjectFactory implements ObjectFactory<Player> {
     @Override
     public final UUID getClassIdentifier() {
         return Player.CLASSIDENT;
     }
 
     @Override
-    public DeadalusObject createObject(Object... arguments) {
+    public Player createObject(Object... arguments) {
         // @todo: do we need to know the owner of the bomb here? probably not
         if(arguments.length > 0) {
             // @todo: add argument parsing + exception if something goes wrong

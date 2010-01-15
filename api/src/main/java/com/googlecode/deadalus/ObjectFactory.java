@@ -21,7 +21,7 @@ import java.util.UUID;
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public interface ObjectFactory {
+public interface ObjectFactory<ObjectClass extends DeadalusObject> {
     /**
      * The unique identifier for this factory
      *
@@ -35,5 +35,5 @@ public interface ObjectFactory {
      * @param arguments
      * @return
      */
-    DeadalusObject createObject(Object... arguments);
+    ObjectClass createObject(Object... arguments);
 }
