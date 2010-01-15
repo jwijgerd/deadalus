@@ -60,7 +60,7 @@ public class RootRegionServer implements RegionServer {
     }
 
     @Override
-    public SpatialObject createObject(UUID clsId, Coordinate initialLocation, Object... arguments) {
+    public DeadalusObject createObject(UUID clsId, Coordinate initialLocation, Object... arguments) {
         // find the correct regionserver and create the object
         return null;
     }

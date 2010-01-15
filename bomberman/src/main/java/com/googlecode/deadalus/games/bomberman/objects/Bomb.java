@@ -16,7 +16,7 @@
 
 package com.googlecode.deadalus.games.bomberman.objects;
 
-import com.googlecode.deadalus.SpatialObject;
+import com.googlecode.deadalus.DeadalusObject;
 import com.googlecode.deadalus.Context;
 import com.googlecode.deadalus.Event;
 import com.googlecode.deadalus.geoutils.LengthUnit;
@@ -27,7 +27,7 @@ import java.nio.charset.Charset;
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public class Bomb implements SpatialObject {
+public class Bomb implements DeadalusObject {
     public static final UUID CLASSIDENT = UUID.nameUUIDFromBytes(Bomb.class.getName().getBytes(Charset.forName("UTF-8")));
     private final UUID id;
     private Context context;

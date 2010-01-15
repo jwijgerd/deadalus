@@ -35,5 +35,5 @@ public interface ObjectFactory {
      * @param arguments
      * @return
      */
-    SpatialObject createObject(Object... arguments);
+    DeadalusObject createObject(Object... arguments);
 }

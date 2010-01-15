@@ -16,7 +16,7 @@
 
 package com.googlecode.deadalus.server.internal;
 
-import com.googlecode.deadalus.SpatialObject;
+import com.googlecode.deadalus.DeadalusObject;
 import com.googlecode.deadalus.Coordinate;
 import com.googlecode.deadalus.Event;
 import com.googlecode.deadalus.Context;
@@ -27,11 +27,11 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public class LocalObject implements SpatialObject, Context {
-    private final SpatialObject delegate;
+public class LocalObject implements DeadalusObject, Context {
+    private final DeadalusObject delegate;
     private final AtomicReference<Coordinate> currentLocation = new AtomicReference<Coordinate>(null);
 
-    public LocalObject(SpatialObject delegate) {
+    public LocalObject(DeadalusObject delegate) {
         this.delegate = delegate;
         this.delegate.setContext(this);
     }

@@ -23,7 +23,7 @@ import java.io.Serializable;
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public interface SpatialObject extends Serializable {
+public interface DeadalusObject extends Serializable {
     /**
      * @return The globally unique identifier of this object instance
      */

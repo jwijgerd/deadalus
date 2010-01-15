@@ -17,7 +17,7 @@
 package com.googlecode.deadalus.games.bomberman.objects;
 
 import com.googlecode.deadalus.ObjectFactory;
-import com.googlecode.deadalus.SpatialObject;
+import com.googlecode.deadalus.DeadalusObject;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -33,7 +33,7 @@ public class BombObjectFactory implements ObjectFactory {
     }
 
     @Override
-    public SpatialObject createObject(Object... arguments) {
+    public DeadalusObject createObject(Object... arguments) {
         return new Bomb(UUID.randomUUID());
     }
 }

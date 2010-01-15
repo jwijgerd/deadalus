@@ -121,7 +121,7 @@ public class LocalRegionServer implements RegionServer {
                 }
             }
             // ok so we should handle the event ourselves
-            // now go through all the SpatialObject instances
+            // now go through all the DeadalusObject instances
             for (LocalObject object : managedObjects.values()) {
                 // now use the distance function
                 if(object.getCurrentLocation().distance(event.getOriginatingLocation(),unit) < radius) {
@@ -157,9 +157,9 @@ public class LocalRegionServer implements RegionServer {
     }
 
     @Override
-    public SpatialObject createObject(UUID clsId, Coordinate initialLocation, Object... arguments) {
+    public DeadalusObject createObject(UUID clsId, Coordinate initialLocation, Object... arguments) {
         ObjectFactory factory = objectFactoryRegistry.getObjectFactory(clsId);
-        SpatialObject object = factory.createObject(arguments);
+        DeadalusObject object = factory.createObject(arguments);
         LocalObject localObject = new LocalObject(object);
         localObject.setCurrentLocation(initialLocation);
         // @todo: need to know the UUID of the creator here. Get this from some kind of security context
