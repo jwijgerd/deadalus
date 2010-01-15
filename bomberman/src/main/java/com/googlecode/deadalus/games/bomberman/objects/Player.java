@@ -28,23 +28,15 @@ import java.nio.charset.Charset;
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public class Bomb implements DeadalusObject {
-    public static final UUID CLASSIDENT = UUID.nameUUIDFromBytes(Bomb.class.getName().getBytes(Charset.forName("UTF-8")));
+public class Player implements DeadalusObject {
+    public static final UUID CLASSIDENT = UUID.nameUUIDFromBytes(Player.class.getName().getBytes(Charset.forName("UTF-8")));
     private final UUID id;
     private Context context;
     // custom properties
-    private final int activationRadius;   // trigger range in metres
-    private final int blastRadius;       // blast radius in metres
-    private volatile boolean exploded = false;
 
-    protected Bomb(UUID id) {
-        this(id,20,50);
-    }
 
-    protected Bomb(UUID id, int activationRadius, int blastRadius) {
+    protected Player(UUID id) {
         this.id = id;
-        this.activationRadius = activationRadius;
-        this.blastRadius = blastRadius;
     }
 
     @Override
@@ -64,16 +56,9 @@ public class Bomb implements DeadalusObject {
 
     @Override
     public void onEvent(Event event) {
-        if(exploded) return;
         // all the logic needs to go here
-        if("create".equals(event.getType()) || "enter".equals(event.getType())) {
-            // check the distance, are they within range to trip the bomd
-            if(event.getOriginatingLocation().distance(context.getCurrentLocation(), LengthUnit.METRES) < activationRadius) {
-                // explode
-                exploded = true;
-                context.broadCast(new ExplosionEvent(this.getId(),context.getCurrentLocation()),blastRadius,LengthUnit.METRES);
-            }
-            // for now we can only explode once and then we become inactive
+        if("explosion".equals(event.getType())) {
+            // a bomb just exploded near us, now let's see what damage this has done
         } else if("tick".equals(event.getType())) {
             // @todo: what do we want to do on a tick?
         }

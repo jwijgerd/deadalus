@@ -14,30 +14,29 @@
  *    limitations under the License.
  */
 
-package com.googlecode.deadalus.games.bomberman.objects;
+package com.googlecode.deadalus.games.bomberman.events;
 
-import com.googlecode.deadalus.ObjectFactory;
-import com.googlecode.deadalus.DeadalusObject;
-import org.springframework.stereotype.Service;
+import com.googlecode.deadalus.Event;
+import com.googlecode.deadalus.Coordinate;
 
 import java.util.UUID;
 
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-@Service()
-public class BombObjectFactory implements ObjectFactory {
-    @Override
-    public UUID getClassIdentifier() {
-        return Bomb.CLASSIDENT;
+public class ExplosionEvent extends EventBase implements Event<Object> {
+
+    public ExplosionEvent(UUID creator, Coordinate location) {
+        super(location, creator);
     }
 
     @Override
-    public DeadalusObject createObject(Object... arguments) {
-        // @todo: do we need to know the owner of the bomb here? probably not
-        if(arguments.length > 0) {
-            // @todo: add argument parsing + exception if something goes wrong
-        }
-        return new Bomb(UUID.randomUUID(), 20, 50);
+    public String getType() {
+        return "explosion";
+    }
+
+    @Override
+    public Object getPayload() {
+        return null;
     }
 }

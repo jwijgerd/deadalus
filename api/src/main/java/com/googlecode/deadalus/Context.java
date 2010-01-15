@@ -16,6 +16,10 @@
 
 package com.googlecode.deadalus;
 
+import com.googlecode.deadalus.geoutils.LengthUnit;
+
+import java.util.Date;
+
 /**
  * The Context class should be used by SpatialObject implementations to interact with the Runtime environment. When a
  * SpatialObject is created (either from scratch or after deserailisation) the Context will be set via the setContext
@@ -28,4 +32,21 @@ public interface Context {
      * @return The current location (i.e. last known) of this object
      */
     Coordinate getCurrentLocation();
+    /**
+     * The last time the coordinate was updated, this can be used to determine the chance that the object is stale (i.e.
+     * if an object it tied to the current position of a Mobile Phone and this position has not been updated in a
+     * while then chances are high this user is not currently at the position)
+     *
+     * @return  the date and time when the last update to the location was made
+     */
+    Date getLastUpdated();
+    /**
+     * Broadcast an event to all objects within the specified radius. The radius is calculated from the originatingLocation
+     * of the event
+     *
+     * @param event
+     * @param radius
+     * @param unit
+     */
+    void broadCast(Event event,double radius, LengthUnit unit);
 }

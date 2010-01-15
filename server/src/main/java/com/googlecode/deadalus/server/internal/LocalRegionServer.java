@@ -160,7 +160,7 @@ public class LocalRegionServer implements RegionServer {
     public DeadalusObject createObject(UUID clsId, Coordinate initialLocation, Object... arguments) {
         ObjectFactory factory = objectFactoryRegistry.getObjectFactory(clsId);
         DeadalusObject object = factory.createObject(arguments);
-        LocalObject localObject = new LocalObject(object);
+        LocalObject localObject = new LocalObject(this, object);
         localObject.setCurrentLocation(initialLocation);
         // @todo: need to know the UUID of the creator here. Get this from some kind of security context
         broadCast(new CreateEvent(object.getId(),initialLocation,null));

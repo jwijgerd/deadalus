@@ -26,10 +26,10 @@ import java.util.UUID;
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 @Service()
-public class BombObjectFactory implements ObjectFactory {
+public class PlayerObjectFactory implements ObjectFactory {
     @Override
-    public UUID getClassIdentifier() {
-        return Bomb.CLASSIDENT;
+    public final UUID getClassIdentifier() {
+        return Player.CLASSIDENT;
     }
 
     @Override
@@ -38,6 +38,6 @@ public class BombObjectFactory implements ObjectFactory {
         if(arguments.length > 0) {
             // @todo: add argument parsing + exception if something goes wrong
         }
-        return new Bomb(UUID.randomUUID(), 20, 50);
+        return new Player(UUID.randomUUID());
     }
 }
