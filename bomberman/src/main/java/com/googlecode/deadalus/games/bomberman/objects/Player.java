@@ -23,6 +23,7 @@ import com.googlecode.deadalus.games.bomberman.events.ExplosionEvent;
 import com.googlecode.deadalus.geoutils.LengthUnit;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.nio.charset.Charset;
 
 /**
@@ -33,6 +34,7 @@ public class Player implements DeadalusObject {
     private final UUID id;
     private Context context;
     // custom properties
+    private final AtomicInteger health = new AtomicInteger(100);
 
 
     protected Player(UUID id) {
@@ -59,8 +61,27 @@ public class Player implements DeadalusObject {
         // all the logic needs to go here
         if("explosion".equals(event.getType())) {
             // a bomb just exploded near us, now let's see what damage this has done
+            // @todo: we probably want to check the last update time and do something with it, possibly notify the
+            // @todo: user and give him some time to update his position to get out of harms way
+            // get the distance
+            double distanceToBlast = context.getCurrentLocation().distance(event.getOriginatingLocation(),LengthUnit.METRES);
+            int damage = ((ExplosionEvent)event).getPayload().calculateDamage(distanceToBlast,LengthUnit.METRES);
+            // now we need to apply the damage
+            applyDamage((ExplosionEvent)event,damage);
         } else if("tick".equals(event.getType())) {
             // @todo: what do we want to do on a tick?
+        }
+    }
+
+    private void applyDamage(ExplosionEvent event, int damage) {
+        // apply the damage to the health, we also need to notify the bomb of the damage done
+        int newHealth = health.addAndGet(-damage);
+        if(newHealth <= 0) {  // oops we died!
+            // notify the Bomb that it has made a Kill!
+
+            // @todo: does this Player object have a next life or should the User instantiate a new Life?
+        } else {
+            // notify the exploding Bomb of the damage done
         }
     }
 }

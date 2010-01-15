@@ -18,16 +18,20 @@ package com.googlecode.deadalus.games.bomberman.events;
 
 import com.googlecode.deadalus.Event;
 import com.googlecode.deadalus.Coordinate;
+import com.googlecode.deadalus.geoutils.LengthUnit;
 
 import java.util.UUID;
 
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public class ExplosionEvent extends EventBase implements Event<Object> {
+public class ExplosionEvent extends EventBase implements Event<ExplosionEvent.ExplosionInfo> {
+    public static final ExplosionInfo MEDIUMBLAST = new ExplosionInfo(100,50);
+    private final ExplosionInfo info;
 
-    public ExplosionEvent(UUID creator, Coordinate location) {
+    public ExplosionEvent(UUID creator, Coordinate location, ExplosionInfo info) {
         super(location, creator);
+        this.info = info;
     }
 
     @Override
@@ -36,7 +40,33 @@ public class ExplosionEvent extends EventBase implements Event<Object> {
     }
 
     @Override
-    public Object getPayload() {
-        return null;
+    public ExplosionInfo getPayload() {
+        return info;
+    }
+
+    public static final class ExplosionInfo {
+        private final int maxDamage;  // maximum damage
+        private final int blastRadius;  // blast radius in meters
+
+        protected ExplosionInfo(int maxDamage, int blastRadius) {
+            this.maxDamage = maxDamage;
+            this.blastRadius = blastRadius;
+        }
+
+        /**
+         * Calculate the damage to a Player based on the distance to the center of the blast. The further away
+         *
+         * @param distanceToCenter
+         * @param unit
+         * @return
+         */
+        public final int calculateDamage(final double distanceToCenter, final LengthUnit unit) {
+            if(distanceToCenter > blastRadius) {  // no damage
+                return 0;
+            } else {
+                // distance 0 is maxDamage
+                return (int) Math.round(((blastRadius - distanceToCenter) / blastRadius) * maxDamage);
+            }
+        }
     }
 }

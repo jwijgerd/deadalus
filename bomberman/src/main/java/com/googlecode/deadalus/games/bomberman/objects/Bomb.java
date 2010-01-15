@@ -71,7 +71,7 @@ public class Bomb implements DeadalusObject {
             if(event.getOriginatingLocation().distance(context.getCurrentLocation(), LengthUnit.METRES) < activationRadius) {
                 // explode
                 exploded = true;
-                context.broadCast(new ExplosionEvent(this.getId(),context.getCurrentLocation()),blastRadius,LengthUnit.METRES);
+                context.broadCast(new ExplosionEvent(this.getId(),context.getCurrentLocation(),ExplosionEvent.MEDIUMBLAST),blastRadius,LengthUnit.METRES);
             }
             // for now we can only explode once and then we become inactive
         } else if("tick".equals(event.getType())) {
