@@ -15,6 +15,7 @@
         <module>server</module>
         <module>webapp</module>
         <module>api</module>
+        <module>bomberman</module>
     </modules>
     <repositories>
         <repository>

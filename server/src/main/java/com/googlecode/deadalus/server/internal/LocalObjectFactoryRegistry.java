@@ -20,6 +20,7 @@ import com.googlecode.deadalus.ObjectFactoryRegistry;
 import com.googlecode.deadalus.ObjectFactory;
 
 import java.util.UUID;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.net.URLClassLoader;
 import java.net.URL;
@@ -28,13 +29,18 @@ import java.io.IOException;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationContext;
+import org.springframework.beans.BeansException;
 
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public class LocalObjectFactoryRegistry implements ObjectFactoryRegistry {
+public class LocalObjectFactoryRegistry implements ObjectFactoryRegistry, ApplicationContextAware {
     private final ConcurrentHashMap<UUID,ObjectFactory> registry = new ConcurrentHashMap<UUID,ObjectFactory>();
     private final JarFileLoader classLoader = new JarFileLoader(new URL[] {},Thread.currentThread().getContextClassLoader());
+    private ApplicationContext parentCtx;
 
     @Override
     public ObjectFactory getObjectFactory(UUID clsid) {
@@ -48,7 +54,26 @@ public class LocalObjectFactoryRegistry implements ObjectFactoryRegistry {
         Resource springCtxResource = new ClassPathResource("META-INF/factories.xml",classLoader);
         if(springCtxResource.exists()) {
             // create the spring context for the application
+            String[] locations = new String[] {springCtxResource.getFilename()};
+            ClassPathXmlApplicationContext springCtx = new ClassPathXmlApplicationContext(locations,parentCtx);
+            Map<String,ObjectFactory> factories = springCtx.getBeansOfType(ObjectFactory.class);
+            // now register them with the registry
+            for (Map.Entry<String, ObjectFactory> factoryEntry : factories.entrySet()) {
+                UUID clsId = UUID.fromString(factoryEntry.getKey());
+                // double check if we already had a factory registered for this UUID
+                if(!registry.containsKey(clsId)) {
+                    registry.put(clsId,factoryEntry.getValue());
+                } else {
+                    // @todo: what to do with already registered ObjectFactory instances? overwrite?
+                }
+            }
+
         }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.parentCtx = applicationContext;
     }
 
     private final class JarFileLoader extends URLClassLoader {
