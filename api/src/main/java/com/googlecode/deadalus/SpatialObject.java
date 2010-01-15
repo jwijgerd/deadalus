@@ -18,11 +18,12 @@ package com.googlecode.deadalus;
 
 
 import java.util.UUID;
+import java.io.Serializable;
 
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-public interface SpatialObject {
+public interface SpatialObject extends Serializable {
     /**
      * @return The globally unique identifier of this object instance
      */
