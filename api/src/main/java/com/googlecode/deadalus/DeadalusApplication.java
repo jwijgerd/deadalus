@@ -22,7 +22,16 @@ package com.googlecode.deadalus;
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 public interface DeadalusApplication {
+    /**
+     * The Name of This application
+     *
+     * @return  the name of the application
+     */
     String getName();
 
+    /**
+     *
+     * @return a short description of the application
+     */
     String getDescription();
 }

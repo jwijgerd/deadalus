@@ -42,6 +42,13 @@ public interface Context {
      */
     Date getLastUpdated();
     /**
+     * The owner of the object. On the Deadalus platform every DeadalusObject has an owner. The owner can change and
+     * the owner is not necessarily the user who created the DeadalusObject
+     *
+     * @return
+     */
+    DeadalusUser getOwner();
+    /**
      * Broadcast an event to all objects within the specified radius. The radius is calculated from the originatingLocation
      * of the event
      *
