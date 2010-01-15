@@ -38,27 +38,27 @@ public class CreateEvent implements Event<UUID> {
     }
 
     @Override
-    public String getType() {
+    public final String getType() {
         return "create";
     }
 
     @Override
-    public Long getTimestamp() {
+    public final Long getTimestamp() {
         return timeStamp;
     }
 
     @Override
-    public Coordinate getOriginatingLocation() {
+    public final Coordinate getOriginatingLocation() {
         return location;
     }
 
     @Override
-    public UUID getOriginationObjectId() {
+    public final UUID getOriginationObjectId() {
         return createdObject;
     }
 
     @Override
-    public UUID getPayload() {
+    public final UUID getPayload() {
         return creator;
     }
 }

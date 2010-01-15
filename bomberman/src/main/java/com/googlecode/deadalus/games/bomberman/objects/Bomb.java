@@ -48,22 +48,22 @@ public class Bomb implements DeadalusObject {
     }
 
     @Override
-    public UUID getId() {
+    public final UUID getId() {
         return id;
     }
 
     @Override
-    public UUID getClsId() {
+    public final UUID getClsId() {
         return CLASSIDENT;
     }
 
     @Override
-    public void setContext(Context context) {
+    public final void setContext(Context context) {
         this.context = context;
     }
 
     @Override
-    public void onEvent(Event event) {
+    public final void onEvent(Event event) {
         if(exploded) return;
         // all the logic needs to go here
         if("create".equals(event.getType()) || "enter".equals(event.getType())) {

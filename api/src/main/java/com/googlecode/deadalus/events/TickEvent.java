@@ -37,31 +37,31 @@ public class TickEvent implements Event<TickEvent.TickInterval> {
     }
 
     @Override
-    public String getType() {
+    public final String getType() {
         return "tick";
     }
 
     @Override
-    public Long getTimestamp() {
+    public final Long getTimestamp() {
         return timeStamp;
     }
 
     @Override
-    public Coordinate getOriginatingLocation() {
+    public final Coordinate getOriginatingLocation() {
         return null;
     }
 
     @Override
-    public UUID getOriginationObjectId() {
+    public final UUID getOriginationObjectId() {
         return null;
     }
 
     @Override
-    public TickInterval getPayload() {
+    public final TickInterval getPayload() {
         return this.interval;
     }
 
-    public class TickInterval {
+    public final class TickInterval {
         private final long interval;
 
         private TickInterval(long interval) {
@@ -72,7 +72,7 @@ public class TickEvent implements Event<TickEvent.TickInterval> {
          *
          * @return  The time to the next tick, can be negative! 
          */
-        public long getTimeToNextTick() {
+        public final long getTimeToNextTick() {
             return (timeStamp + interval) - System.currentTimeMillis();
         }
     }

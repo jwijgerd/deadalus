@@ -16,10 +16,7 @@
 
 package com.googlecode.deadalus.server.internal;
 
-import com.googlecode.deadalus.DeadalusObject;
-import com.googlecode.deadalus.Coordinate;
-import com.googlecode.deadalus.Event;
-import com.googlecode.deadalus.Context;
+import com.googlecode.deadalus.*;
 import com.googlecode.deadalus.geoutils.LengthUnit;
 
 import java.util.UUID;
@@ -76,6 +73,12 @@ public class LocalObject implements DeadalusObject, Context {
     public void broadCast(Event event, double radius, LengthUnit unit) {
         // @todo: maybe add some statistics here
         regionServer.broadCast(event,radius,unit);
+    }
+
+    @Override
+    public void send(Event event, UUID recipientId, EventCallback eventCallback) {
+        // @todo: maybe add some statistics here
+        regionServer.send(event,recipientId,eventCallback);
     }
 
     // manipulate the internal properties

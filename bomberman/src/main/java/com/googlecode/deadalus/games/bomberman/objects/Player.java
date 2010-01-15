@@ -20,6 +20,7 @@ import com.googlecode.deadalus.DeadalusObject;
 import com.googlecode.deadalus.Context;
 import com.googlecode.deadalus.Event;
 import com.googlecode.deadalus.games.bomberman.events.ExplosionEvent;
+import com.googlecode.deadalus.games.bomberman.events.DamageEvent;
 import com.googlecode.deadalus.geoutils.LengthUnit;
 
 import java.util.UUID;
@@ -42,22 +43,22 @@ public class Player implements DeadalusObject {
     }
 
     @Override
-    public UUID getId() {
+    public final UUID getId() {
         return id;
     }
 
     @Override
-    public UUID getClsId() {
+    public final UUID getClsId() {
         return CLASSIDENT;
     }
 
     @Override
-    public void setContext(Context context) {
+    public final void setContext(Context context) {
         this.context = context;
     }
 
     @Override
-    public void onEvent(Event event) {
+    public final void onEvent(Event event) {
         // all the logic needs to go here
         if("explosion".equals(event.getType())) {
             // a bomb just exploded near us, now let's see what damage this has done
@@ -74,14 +75,16 @@ public class Player implements DeadalusObject {
     }
 
     private void applyDamage(ExplosionEvent event, int damage) {
+        // @todo: when the Shield is implemented we need to take damage out of the shield
         // apply the damage to the health, we also need to notify the bomb of the damage done
-        int newHealth = health.addAndGet(-damage);
+        final int newHealth = health.addAndGet(-damage);
         if(newHealth <= 0) {  // oops we died!
             // notify the Bomb that it has made a Kill!
-
+            context.send(new DamageEvent(context.getCurrentLocation(),getId(),damage,true),event.getOriginationObjectId(),null);
             // @todo: does this Player object have a next life or should the User instantiate a new Life?
         } else {
             // notify the exploding Bomb of the damage done
+            context.send(new DamageEvent(context.getCurrentLocation(),getId(),damage,false),event.getOriginationObjectId(),null);
         }
     }
 }

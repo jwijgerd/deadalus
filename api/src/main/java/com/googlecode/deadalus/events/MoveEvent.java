@@ -38,22 +38,22 @@ public abstract class MoveEvent implements Event<Coordinate> {
     }
 
     @Override
-    public Long getTimestamp() {
+    public final Long getTimestamp() {
         return timeStamp;
     }
 
     @Override
-    public Coordinate getOriginatingLocation() {
+    public final Coordinate getOriginatingLocation() {
         return from;
     }
 
     @Override
-    public UUID getOriginationObjectId() {
+    public final UUID getOriginationObjectId() {
         return subject;
     }
 
     @Override
-    public Coordinate getPayload() {
+    public final Coordinate getPayload() {
         return to;
     }
 }

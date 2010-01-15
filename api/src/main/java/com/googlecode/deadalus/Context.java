@@ -19,6 +19,7 @@ package com.googlecode.deadalus;
 import com.googlecode.deadalus.geoutils.LengthUnit;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * The Context class should be used by SpatialObject implementations to interact with the Runtime environment. When a
@@ -49,4 +50,11 @@ public interface Context {
      * @param unit
      */
     void broadCast(Event event,double radius, LengthUnit unit);
+    /**
+     * Send an event directly to a recipient identified by the UUID
+     *
+     * @param event
+     * @param recipientId
+     */
+    void send(Event event, UUID recipientId, EventCallback eventCallback);
 }

@@ -32,7 +32,7 @@ public class LeaveEvent extends MoveEvent {
     }
 
     @Override
-    public String getType() {
+    public final String getType() {
         return "leave";
     }
 
