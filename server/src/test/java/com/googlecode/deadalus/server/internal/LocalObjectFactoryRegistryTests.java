@@ -45,6 +45,7 @@ public class LocalObjectFactoryRegistryTests {
         // now we should get the bomberman factory
         ObjectFactory bombFactory = registry.getObjectFactory(UUID.fromString("3d82f2e1-d5c1-376e-8047-a98a395fcf4a"));
         Assert.assertNotNull(bombFactory);
+        Assert.assertNotNull(bombFactory.getApplication());
         //EasyMock.verify(parentContext);
 
     }

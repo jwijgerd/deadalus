@@ -36,4 +36,10 @@ public interface ObjectFactory<ObjectClass extends DeadalusObject> {
      * @return
      */
     ObjectClass createObject(Object... arguments);
+
+    /**
+     *
+     * @return  The application this factory belongs to
+     */
+    DeadalusApplication getApplication();
 }

@@ -18,7 +18,10 @@ package com.googlecode.deadalus.games.bomberman.objects;
 
 import com.googlecode.deadalus.ObjectFactory;
 import com.googlecode.deadalus.DeadalusObject;
+import com.googlecode.deadalus.DeadalusApplication;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
@@ -26,14 +29,27 @@ import java.util.UUID;
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 @Service()
+@Configurable
 public class BombObjectFactory implements ObjectFactory<Bomb> {
+    private DeadalusApplication application;
+
+    @Autowired
+    public final void setApplication(DeadalusApplication application) {
+        this.application = application;
+    }
+
     @Override
-    public UUID getClassIdentifier() {
+    public final DeadalusApplication getApplication() {
+        return application;
+    }
+
+    @Override
+    public final UUID getClassIdentifier() {
         return Bomb.CLASSIDENT;
     }
 
     @Override
-    public Bomb createObject(Object... arguments) {
+    public final Bomb createObject(Object... arguments) {
         // @todo: do we need to know the owner of the bomb here? probably not
         if(arguments.length > 0) {
             // @todo: add argument parsing + exception if something goes wrong

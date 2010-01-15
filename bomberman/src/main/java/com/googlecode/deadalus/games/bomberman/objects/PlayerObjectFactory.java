@@ -18,7 +18,9 @@ package com.googlecode.deadalus.games.bomberman.objects;
 
 import com.googlecode.deadalus.ObjectFactory;
 import com.googlecode.deadalus.DeadalusObject;
+import com.googlecode.deadalus.DeadalusApplication;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
@@ -27,6 +29,18 @@ import java.util.UUID;
  */
 @Service()
 public class PlayerObjectFactory implements ObjectFactory<Player> {
+    private DeadalusApplication application;
+
+    @Autowired
+    public final void setApplication(DeadalusApplication application) {
+        this.application = application;
+    }
+
+    @Override
+    public final DeadalusApplication getApplication() {
+        return application;
+    }
+    
     @Override
     public final UUID getClassIdentifier() {
         return Player.CLASSIDENT;
