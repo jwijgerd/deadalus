@@ -62,7 +62,7 @@ public class LocalRegionServer implements RegionServer {
         LOG = Logger.getLogger("RegionServer."+geoHash.getHash());
     }
 
-    public void start() {
+    public final void start() {
         // create the workers
         for(int i=0; i<MAX_WORKERS; i++) {
             workers.add(new EventWorker());
@@ -73,7 +73,7 @@ public class LocalRegionServer implements RegionServer {
         LOG.info("RegionServer started for region: "+ ("".equals(geoHash.getHash()) ? "ROOT" : geoHash.getHash()));
     }
 
-    public void stop() {
+    public final void stop() {
         // stop all workers
         for (EventWorker worker : workers) {
             worker.stop();
@@ -98,12 +98,12 @@ public class LocalRegionServer implements RegionServer {
         this.executorService = executorService;
     }
 
-    public GeoHash getGeoHash() {
+    public final GeoHash getGeoHash() {
         return geoHash;
     }
 
     @Override
-    public void broadCast(Event event) {
+    public final void broadCast(Event event) {
         // add an event for each UUID that is locally managed and broadcast the event to other RegionServer instances
         for (UUID uuid : managedObjects.keySet()) {
             sendLocal(event,uuid,null,true);
@@ -114,7 +114,7 @@ public class LocalRegionServer implements RegionServer {
     }
 
     @Override
-    public void broadCast(Event event, double radius, LengthUnit unit) {
+    public final void broadCast(Event event, double radius, LengthUnit unit) {
         // first check to see if this is at all for us
         if(event.getOriginatingLocation().getGeoHash().within(this.geoHash)) {
             // ok we have the hash now we need to find out if it is managed by one of the Region Server below us
@@ -138,7 +138,7 @@ public class LocalRegionServer implements RegionServer {
     }
 
     @Override
-    public void send(Event event, UUID recipientId, EventCallback eventCallback) {
+    public final void send(Event event, UUID recipientId, EventCallback eventCallback) {
         // first check if we manage UUID ourselves
         if(managedObjects.containsKey(recipientId)) {
             sendLocal(event,recipientId,eventCallback,false);
@@ -162,7 +162,7 @@ public class LocalRegionServer implements RegionServer {
     }
 
     @Override
-    public DeadalusObject createObject(UUID clsId, Coordinate initialLocation, Object... arguments) {
+    public final DeadalusObject createObject(UUID clsId, Coordinate initialLocation, Object... arguments) {
         ObjectFactory factory = objectFactoryRegistry.getObjectFactory(clsId);
         DeadalusObject object = factory.createObject(arguments);
         LocalObject localObject = new LocalObject(this, object);
@@ -173,7 +173,7 @@ public class LocalRegionServer implements RegionServer {
     }
 
     @Override
-    public void moveObject(UUID objectId,Coordinate toLocation) {
+    public final void moveObject(UUID objectId,Coordinate toLocation) {
         if(managedObjects.containsKey(objectId)) {
             // update the object and create events
             LocalObject localObject = managedObjects.get(objectId);
@@ -229,7 +229,7 @@ public class LocalRegionServer implements RegionServer {
          * @throws Exception
          */
         @Override
-        public LocalEvent call() throws Exception {
+        public final LocalEvent call() throws Exception {
             // store the calling thread to be able to interrupt later.
             if(!runningThread.compareAndSet(null,Thread.currentThread())) {
                 // somehow this worker was executed before it was finished

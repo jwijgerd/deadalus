@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -53,7 +54,12 @@ public class RestController {
         binder.registerCustomEditor(Coordinate.class,new CoordinateEditor());
     }
 
-    @RequestMapping("create/{clsId}/{latlon}")
+    @RequestMapping(value = "test")
+    public String test() {
+        return "success";    
+    }
+
+    @RequestMapping(value = "create/{clsId}/{latlon}",method = {RequestMethod.GET})
     public String createObject(@PathVariable UUID clsId,@PathVariable Coordinate latlon, Model model) {
         // first get the RegionServer for this coordinate
         RegionServer regionServer = regionServerRegistry.findByCoordinate(latlon);
