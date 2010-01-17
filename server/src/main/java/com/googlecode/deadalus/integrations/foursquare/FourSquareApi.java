@@ -58,6 +58,7 @@ public class FourSquareApi {
         historyMethod.setHeader("Authorization", "Basic " + encodedPW);
         HttpResponse response = httpClient.execute(historyMethod);
         String content = EntityUtils.toString(response.getEntity());
+        System.out.println(content);
         // now we need to parse the coordinate
         return null;
     }

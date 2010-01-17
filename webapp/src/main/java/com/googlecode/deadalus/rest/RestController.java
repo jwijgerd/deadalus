@@ -54,12 +54,12 @@ public class RestController {
         binder.registerCustomEditor(Coordinate.class,new CoordinateEditor());
     }
 
-    @RequestMapping(value = "test")
+    @RequestMapping(value = "/test")
     public String test() {
         return "success";    
     }
 
-    @RequestMapping(value = "create/{clsId}/{latlon}",method = {RequestMethod.GET})
+    @RequestMapping(value = "/create/{clsId}/{latlon}",method = {RequestMethod.GET})
     public String createObject(@PathVariable UUID clsId,@PathVariable Coordinate latlon, Model model) {
         // first get the RegionServer for this coordinate
         RegionServer regionServer = regionServerRegistry.findByCoordinate(latlon);
@@ -70,7 +70,7 @@ public class RestController {
         return "create";
     }
 
-    @RequestMapping("move/{objectId}/{to.latlon}")
+    @RequestMapping("/move/{objectId}/{to.latlon}")
     public String move(@PathVariable("objectId") UUID objectId,@PathVariable("to.latlon") Coordinate to) {
         RegionServer regionServer = regionServerRegistry.findByObjectId(objectId);
         regionServer.moveObject(objectId,to);
