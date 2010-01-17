@@ -52,7 +52,7 @@
     </bean>
 
 
-    <!--<security:http auto-config='true'>
+   <!-- <security:http auto-config='true'>
         <security:intercept-url pattern="/**" access="ROLE_USER"/>
     </security:http>-->
 </beans>
