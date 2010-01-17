@@ -29,7 +29,7 @@ public class CoordinateEditor extends PropertyEditorSupport {
 
     @Override
     public final String getAsText() {
-        Coordinate coordinate = (Coordinate)getSource();
+        Coordinate coordinate = (Coordinate)getValue();
         return (Double.toString(coordinate.getLatitude())+","+Double.toString(coordinate.getLongitude()));
     }
 
@@ -37,6 +37,6 @@ public class CoordinateEditor extends PropertyEditorSupport {
     public final void setAsText(String text) throws IllegalArgumentException {
         String[] latlon = text.split(",");
         if(latlon.length != 2) throw new IllegalArgumentException("Input should be of form \"<double(lat)>,<double<lon>\"");
-        setSource(new Coordinate(Double.parseDouble(latlon[0]),Double.parseDouble(latlon[1])));
+        setValue(new Coordinate(Double.parseDouble(latlon[0]),Double.parseDouble(latlon[1])));
     }
 }

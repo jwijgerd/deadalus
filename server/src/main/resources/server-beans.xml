@@ -37,13 +37,15 @@
 
     </bean>
 
-    <bean id="objectFactoryRegistry" class="com.googlecode.deadalus.server.internal.LocalObjectFactoryRegistry"/>
+    <bean id="objectFactoryRegistry" class="com.googlecode.deadalus.server.internal.LocalObjectFactoryRegistry" init-method="init" destroy-method="destroy">
+        <property name="deployDirectory" value="${local.objectFactoryRegistry.deployDirectory}"/>
+    </bean>
 
     <bean id="bootstrapper" class="com.googlecode.deadalus.server.internal.RegionServerBootstrapper" init-method="init"
           destroy-method="destoy">
         <constructor-arg index="0" ref="regionServerRegistry"/>
-        <property name="localRoot" value="${local.regionserver.root.geoHash}"/>
-        <property name="snapshotDirectory" value="${local.regionserver.snapshotdir}"/>
+        <property name="localRoot" value="${local.regionServer.root.geoHash}"/>
+        <property name="snapshotDirectory" value="${local.regionServer.snapshotDir}"/>
     </bean>
 
     <bean id="executor" class="java.util.concurrent.ThreadPoolExecutor" destroy-method="shutdown">

@@ -25,11 +25,11 @@ import java.util.UUID;
 public class UUIDEditor extends PropertyEditorSupport {
     @Override
     public final void setAsText(String text) throws IllegalArgumentException {
-        setSource(UUID.fromString(text));
+        setValue(UUID.fromString(text));
     }
 
     @Override
     public final String getAsText() {
-        return getSource().toString();
+        return getValue().toString();
     }
 }

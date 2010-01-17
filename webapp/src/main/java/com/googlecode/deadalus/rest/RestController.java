@@ -60,7 +60,7 @@ public class RestController {
     }
 
     @RequestMapping(value = "/create/{clsId}/{latlon}",method = {RequestMethod.GET})
-    public String createObject(@PathVariable UUID clsId,@PathVariable Coordinate latlon, Model model) {
+    public String createObject(@PathVariable("clsId") UUID clsId,@PathVariable("latlon") Coordinate latlon, Model model) {
         // first get the RegionServer for this coordinate
         RegionServer regionServer = regionServerRegistry.findByCoordinate(latlon);
         // @todo: if this is not a local server than should we send a Redirect?

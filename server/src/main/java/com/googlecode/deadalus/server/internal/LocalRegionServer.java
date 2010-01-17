@@ -28,13 +28,14 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowire;
 
 /**
  * Implememtation of a RegionServer that is running in the local JVM.
  *
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
-@Configurable()
+@Configurable(autowire = Autowire.BY_TYPE, dependencyCheck = true)
 public class LocalRegionServer implements RegionServer {
     private final Logger LOG;
     /** default maximum number of workers to run, set to the number of processors (cores) + 1 */

@@ -26,6 +26,7 @@ import java.net.URLClassLoader;
 import java.net.URL;
 import java.io.File;
 import java.io.IOException;
+import java.io.FilenameFilter;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ClassPathResource;
@@ -41,10 +42,41 @@ public class LocalObjectFactoryRegistry implements ObjectFactoryRegistry, Applic
     private final ConcurrentHashMap<UUID,ObjectFactory> registry = new ConcurrentHashMap<UUID,ObjectFactory>();
     private final JarFileLoader classLoader = new JarFileLoader(new URL[] {},Thread.currentThread().getContextClassLoader());
     private ApplicationContext parentCtx;
+    private String deployDirectory;
 
     @Override
-    public ObjectFactory getObjectFactory(UUID clsid) {
+    public final ObjectFactory getObjectFactory(UUID clsid) {
         return registry.get(clsid);
+    }
+
+
+
+    public final void init() {
+        // for now we make a single pass over the scandirectory
+        File scanDirectory = new File(deployDirectory);
+        if(scanDirectory.exists() && scanDirectory.isDirectory()) {
+            File[] jarFiles = scanDirectory.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".jar");
+                }
+            });
+            for (File jarFile : jarFiles) {
+                try {
+                    addJarFile(jarFile);
+                } catch (IOException e) {
+                    //@todo: add log statement
+                }
+            }
+        }
+    }
+
+    public final void destroy() {
+
+    }
+
+    public void setDeployDirectory(String deployDirectory) {
+        this.deployDirectory = deployDirectory;
     }
 
     public void addJarFile(File jarFile) throws IOException {
