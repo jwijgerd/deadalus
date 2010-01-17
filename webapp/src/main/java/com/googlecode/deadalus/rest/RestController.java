@@ -19,8 +19,20 @@ package com.googlecode.deadalus.rest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.googlecode.deadalus.RegionServerRegistry;
+import com.googlecode.deadalus.Coordinate;
+import com.googlecode.deadalus.RegionServer;
+import com.googlecode.deadalus.DeadalusObject;
+import com.googlecode.deadalus.rest.editor.UUIDEditor;
+import com.googlecode.deadalus.rest.editor.CoordinateEditor;
+
+import javax.swing.text.View;
+import java.util.UUID;
 
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
@@ -28,15 +40,34 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Controller
 @Configurable
 public class RestController {
+    private RegionServerRegistry regionServerRegistry;
 
-    @RequestMapping("create/{clsId}/{lat}/{lon}")
-    public String createObject(@PathVariable String clsId,@PathVariable double lat,@PathVariable double lon, Model model) {
-        // create the object for this
+    @Autowired
+    public void setRegionServerRegistry(RegionServerRegistry regionServerRegistry) {
+        this.regionServerRegistry = regionServerRegistry;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(UUID.class,new UUIDEditor());
+        binder.registerCustomEditor(Coordinate.class,new CoordinateEditor());
+    }
+
+    @RequestMapping("create/{clsId}/{latlon}")
+    public String createObject(@PathVariable UUID clsId,@PathVariable Coordinate latlon, Model model) {
+        // first get the RegionServer for this coordinate
+        RegionServer regionServer = regionServerRegistry.findByCoordinate(latlon);
+        // @todo: if this is not a local server than should we send a Redirect?
+        DeadalusObject object = regionServer.createObject(clsId,latlon);
+        // @todo: need some way of passing in arbitrary parameters
+        model.addAttribute("createdObject",object);
         return "create";
     }
 
-    @RequestMapping("move/{objectId}/{to.lat}/{to.lon}")
-    public String move(@PathVariable("objectId") String objectId,@PathVariable("to.lat") double lat,@PathVariable("to.lon") double lon) {
+    @RequestMapping("move/{objectId}/{to.latlon}")
+    public String move(@PathVariable("objectId") UUID objectId,@PathVariable("to.latlon") Coordinate to) {
+        RegionServer regionServer = regionServerRegistry.findByObjectId(objectId);
+        regionServer.moveObject(objectId,to);
         return "move";    
     }
 }

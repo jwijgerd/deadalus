@@ -50,7 +50,11 @@ public class RegionServerBootstrapper {
     }
 
     public void setLocalRoot(String geoHash) {
-        this.localRoot = GeoHash.fromGeohashString(geoHash);
+        if("root".equals(geoHash)) {
+            this.localRoot = GeoHash.fromGeohashString("");
+        } else {
+            this.localRoot = GeoHash.fromGeohashString(geoHash);
+        }
     }
 
     public void setSnapshotDirectory(File snapshotDirectory) {

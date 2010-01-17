@@ -30,10 +30,10 @@
     <!-- use @Transactional tags to declare transactions -->
     <!--<tx:annotation-driven mode="aspectj"/>-->
     <!-- use the @Configurable tag to inject objects with aspectj -->
-    <context:property-placeholder location="default.properties"/>
+    <context:property-placeholder location="classpath:default.properties"/>
     <context:spring-configured/>
 
-    <bean id="regionServerRegistry" class="com.googlecode.deadalus.server.internal.LocalRegionServerRegistry">
+    <bean id="regionServerRegistry" class="com.googlecode.deadalus.server.internal.LocalRegionServerRegistry" init-method="init" destroy-method="destroy">
 
     </bean>
 
@@ -42,7 +42,7 @@
     <bean id="bootstrapper" class="com.googlecode.deadalus.server.internal.RegionServerBootstrapper" init-method="init"
           destroy-method="destoy">
         <constructor-arg index="0" ref="regionServerRegistry"/>
-        <property name="localRoot" value="${local.regionserver.root.geoHash"/>
+        <property name="localRoot" value="${local.regionserver.root.geoHash}"/>
         <property name="snapshotDirectory" value="${local.regionserver.snapshotdir}"/>
     </bean>
 

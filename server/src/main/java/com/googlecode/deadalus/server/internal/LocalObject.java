@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class LocalObject implements DeadalusObject, Context {
     private transient final LocalRegionServer regionServer;
+    private final DeadalusObject owner = null; // @todo: set the owner 
     private final DeadalusObject delegate;
     private final AtomicReference<Coordinate> currentLocation = new AtomicReference<Coordinate>(null);
     private final AtomicReference<Date> lastUpdated = new AtomicReference<Date>(null);
@@ -39,50 +40,55 @@ public class LocalObject implements DeadalusObject, Context {
     }
 
     @Override
-    public UUID getId() {
+    public final UUID getId() {
         return delegate.getId();
     }
 
     @Override
-    public UUID getClsId() {
+    public final UUID getClsId() {
         return delegate.getClsId();
     }
 
     @Override
-    public void setContext(Context context) {
+    public final void setContext(Context context) {
         // do nothing
     }
 
     @Override
-    public Coordinate getCurrentLocation() {
+    public final Coordinate getCurrentLocation() {
         return currentLocation.get();
     }
 
     @Override
-    public Date getLastUpdated() {
+    public final Date getLastUpdated() {
         return lastUpdated.get();
     }
 
     @Override
-    public void onEvent(Event event) {
+    public final void onEvent(Event event) {
         // @todo: add some management code here: check invocations, time spend etc
         delegate.onEvent(event);
     }
 
     @Override
-    public void broadCast(Event event, double radius, LengthUnit unit) {
+    public final void broadCast(Event event, double radius, LengthUnit unit) {
         // @todo: maybe add some statistics here
         regionServer.broadCast(event,radius,unit);
     }
 
     @Override
-    public void send(Event event, UUID recipientId, EventCallback eventCallback) {
+    public final void send(Event event, UUID recipientId, EventCallback eventCallback) {
         // @todo: maybe add some statistics here
         regionServer.send(event,recipientId,eventCallback);
     }
 
+    @Override
+    public final DeadalusUser getOwner() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     // manipulate the internal properties
-    Coordinate setCurrentLocation(Coordinate newLocation) {
+    protected final Coordinate setCurrentLocation(Coordinate newLocation) {
         lastUpdated.set(new Date());
         return currentLocation.getAndSet(newLocation);
     }

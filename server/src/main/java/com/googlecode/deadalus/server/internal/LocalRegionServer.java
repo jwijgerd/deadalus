@@ -22,6 +22,7 @@ import com.googlecode.deadalus.geoutils.GeoHash;
 import com.googlecode.deadalus.events.*;
 
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -35,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Configurable()
 public class LocalRegionServer implements RegionServer {
+    private final Logger LOG;
     /** default maximum number of workers to run, set to the number of processors (cores) + 1 */
     private static final int MAX_WORKERS = Runtime.getRuntime().availableProcessors()+1;
     /** The hash that defines this server */
@@ -57,6 +59,7 @@ public class LocalRegionServer implements RegionServer {
 
     public LocalRegionServer(GeoHash geoHash) {
         this.geoHash = geoHash;
+        LOG = Logger.getLogger("RegionServer."+geoHash.getHash());
     }
 
     public void start() {
@@ -67,6 +70,7 @@ public class LocalRegionServer implements RegionServer {
         // @todo: register with RegionServerRegistry?
 
         // we're ready for action
+        LOG.info("RegionServer started for region: "+ ("".equals(geoHash.getHash()) ? "ROOT" : geoHash.getHash()));
     }
 
     public void stop() {
@@ -76,6 +80,7 @@ public class LocalRegionServer implements RegionServer {
         }
 
         // we're done here
+        LOG.info("RegionServer stopped..");
     }
 
     @Autowired(required = true)

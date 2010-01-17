@@ -31,6 +31,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LocalRegionServerRegistry implements RegionServerRegistry {
     private final ConcurrentHashMap<GeoHash,RegionServer> registeredServers = new ConcurrentHashMap<GeoHash,RegionServer>();
 
+    public final void init() {
+        // nothing to do
+    }
+
+    public final void destroy() {
+        // stop all registered servers
+        for (Map.Entry<GeoHash, RegionServer> regionServerEntry : registeredServers.entrySet()) {
+            if(regionServerEntry.getValue() instanceof LocalRegionServer) {
+                ((LocalRegionServer)regionServerEntry.getValue()).stop();
+            }
+        }
+    }
+
     @Override
     public RegionServer findByObjectId(UUID objectId) {
         // @todo: need some way to query the cluster
