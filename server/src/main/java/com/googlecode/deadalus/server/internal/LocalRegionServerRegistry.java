@@ -45,18 +45,18 @@ public class LocalRegionServerRegistry implements RegionServerRegistry {
     }
 
     @Override
-    public RegionServer findByObjectId(UUID objectId) {
+    public final RegionServer findByObjectId(UUID objectId) {
         // @todo: need some way to query the cluster
         return null;
     }
 
     @Override
-    public RegionServer findByCoordinate(Coordinate coordinate) {
+    public final RegionServer findByCoordinate(Coordinate coordinate) {
         return findByGeoHash(coordinate.getGeoHash());
     }
 
     @Override
-    public RegionServer findByGeoHash(GeoHash geoHash) {
+    public final RegionServer findByGeoHash(GeoHash geoHash) {
         for (Map.Entry<GeoHash, RegionServer> entry : registeredServers.entrySet()) {
             if(geoHash.within(entry.getKey())) return entry.getValue();
         }
@@ -65,7 +65,7 @@ public class LocalRegionServerRegistry implements RegionServerRegistry {
     }
 
     @Override
-    public void register(RegionServer server) {
+    public final void register(RegionServer server) {
         // @todo: notify cluster of new member
         registeredServers.put(server.getGeoHash(),server);
     }

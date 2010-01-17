@@ -19,6 +19,7 @@ package com.googlecode.deadalus.integrations.foursquare;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.easymock.EasyMock;
 
 import java.io.IOException;
 import java.util.Map;
@@ -29,6 +30,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import com.googlecode.deadalus.Coordinate;
+import com.googlecode.deadalus.DeadalusUser;
 
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
@@ -36,8 +38,9 @@ import com.googlecode.deadalus.Coordinate;
 public class FourSquareTests {
     @Test(enabled = false)
     public void testGetCurrentLocation() throws IOException {
+        DeadalusUser user = EasyMock.createMock(DeadalusUser.class);
         FourSquareApi api = new FourSquareApi();
-        LocationUpdate update = api.getLastKnownLocation();
+        LocationUpdate update = api.getLastKnownLocation(user);
         Assert.assertNotNull(update);
     }
 

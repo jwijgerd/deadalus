@@ -30,11 +30,17 @@ public class LocationUpdate {
     private final DeadalusUser user;
     private final Coordinate newLocation;
     private final Date timeOfUpdate;
+    private final String externalApplication;
 
-    public LocationUpdate(DeadalusUser user, Coordinate newLocation, Date timeOfUpdate) {
+    public LocationUpdate(String externalApplication, DeadalusUser user, Coordinate newLocation, Date timeOfUpdate) {
+        this.externalApplication = externalApplication;
         this.user = user;
         this.newLocation = newLocation;
         this.timeOfUpdate = timeOfUpdate;
+    }
+
+    public final String getExternalApplication() {
+        return externalApplication;
     }
 
     public final DeadalusUser getUser() {

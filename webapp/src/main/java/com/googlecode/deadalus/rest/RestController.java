@@ -44,12 +44,12 @@ public class RestController {
     private RegionServerRegistry regionServerRegistry;
 
     @Autowired
-    public void setRegionServerRegistry(RegionServerRegistry regionServerRegistry) {
+    public final void setRegionServerRegistry(RegionServerRegistry regionServerRegistry) {
         this.regionServerRegistry = regionServerRegistry;
     }
 
     @InitBinder
-    public void initBinder(WebDataBinder binder) {
+    public final void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(UUID.class,new UUIDEditor());
         binder.registerCustomEditor(Coordinate.class,new CoordinateEditor());
     }
@@ -60,7 +60,7 @@ public class RestController {
     }
 
     @RequestMapping(value = "/create/{clsId}/{latlon}",method = {RequestMethod.GET})
-    public String createObject(@PathVariable("clsId") UUID clsId,@PathVariable("latlon") Coordinate latlon, Model model) {
+    public final String createObject(@PathVariable("clsId") UUID clsId,@PathVariable("latlon") Coordinate latlon, Model model) {
         // first get the RegionServer for this coordinate
         RegionServer regionServer = regionServerRegistry.findByCoordinate(latlon);
         // @todo: if this is not a local server than should we send a Redirect?
@@ -71,7 +71,7 @@ public class RestController {
     }
 
     @RequestMapping("/move/{objectId}/{to.latlon}")
-    public String move(@PathVariable("objectId") UUID objectId,@PathVariable("to.latlon") Coordinate to) {
+    public final String move(@PathVariable("objectId") UUID objectId,@PathVariable("to.latlon") Coordinate to) {
         RegionServer regionServer = regionServerRegistry.findByObjectId(objectId);
         regionServer.moveObject(objectId,to);
         return "move";    

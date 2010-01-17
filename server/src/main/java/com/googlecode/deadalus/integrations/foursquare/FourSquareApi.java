@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.Map;
 
 import com.googlecode.deadalus.Coordinate;
+import com.googlecode.deadalus.DeadalusUser;
 
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
@@ -56,7 +57,7 @@ public class FourSquareApi {
         this.httpClient = httpClient;
     }
 
-    public LocationUpdate getLastKnownLocation() throws IOException {
+    public LocationUpdate getLastKnownLocation(DeadalusUser user) throws IOException {
         String userName = "jwijgerd@gmail.com";
         String password = "xxxxxxx";
         Base64 codec = new Base64(76, new byte[]{});
@@ -77,7 +78,7 @@ public class FourSquareApi {
                     // now get the venue
                     Coordinate newLocation = FourSquareUtils.venueToCoordinate((Map<String,Object>) checkin.get("venue"));
                     if(newLocation != null) {
-                        return new LocationUpdate(null,newLocation,date);
+                        return new LocationUpdate("http://foursquare.com/",user,newLocation,date);
                     }
                 } catch (ParseException e) {
                     // ignore
