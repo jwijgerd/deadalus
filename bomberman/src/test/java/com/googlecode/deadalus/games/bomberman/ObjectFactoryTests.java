@@ -26,6 +26,7 @@ import java.util.Map;
 import java.nio.charset.Charset;
 
 import com.googlecode.deadalus.games.bomberman.objects.Bomb;
+import com.googlecode.deadalus.games.bomberman.objects.Player;
 import com.googlecode.deadalus.ObjectFactory;
 
 /**
@@ -42,6 +43,7 @@ public class ObjectFactoryTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testGenerateUUID() {
+        System.out.println(UUID.nameUUIDFromBytes(Player.class.getName().getBytes(Charset.forName("UTF-8"))));
         System.out.println(UUID.randomUUID());
         System.out.println(Bomb.class.getName());
         System.out.println(UUID.nameUUIDFromBytes("com.googlecode.deadalus.games.bomberman.objects.Bomb".getBytes(Charset.forName("UTF-8"))));

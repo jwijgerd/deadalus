@@ -23,6 +23,7 @@ import com.googlecode.deadalus.events.*;
 
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -56,6 +57,8 @@ public class LocalRegionServer implements RegionServer {
     private ExecutorService executorService;
     /** The list of EventWorker instances that handle the events, this contains both running and stopped instances */
     private final List<EventWorker> workers = new ArrayList<EventWorker>();
+    /** */
+    private TickEventGenerator tickEventGenerator;
 
 
     public LocalRegionServer(GeoHash geoHash) {
@@ -68,6 +71,9 @@ public class LocalRegionServer implements RegionServer {
         for(int i=0; i<MAX_WORKERS; i++) {
             workers.add(new EventWorker());
         }
+        // start sending ticks
+        tickEventGenerator = new TickEventGenerator(2000);
+        executorService.submit(tickEventGenerator);
         // @todo: register with RegionServerRegistry?
 
         // we're ready for action
@@ -79,6 +85,7 @@ public class LocalRegionServer implements RegionServer {
         for (EventWorker worker : workers) {
             worker.stop();
         }
+        tickEventGenerator.stop();
 
         // we're done here
         LOG.info("RegionServer stopped..");
@@ -168,6 +175,7 @@ public class LocalRegionServer implements RegionServer {
         DeadalusObject object = factory.createObject(arguments);
         LocalObject localObject = new LocalObject(this, object);
         localObject.setCurrentLocation(initialLocation);
+        managedObjects.put(localObject.getId(),localObject);
         // @todo: need to know the UUID of the creator here. Get this from some kind of security context
         broadCast(new CreateEvent(object.getId(),initialLocation,null));
         return object;
@@ -232,27 +240,35 @@ public class LocalRegionServer implements RegionServer {
         @Override
         public final LocalEvent call() throws Exception {
             // store the calling thread to be able to interrupt later.
-            if(!runningThread.compareAndSet(null,Thread.currentThread())) {
-                // somehow this worker was executed before it was finished
-                // @todo: do we throw an exception or ?
-            }
-            while(running) {
-                LocalEvent localEvent = null;
-                try {
-                    localEvent = eventQueue.poll(60, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
-                    // this will probably mean we interrupted the thread so running will become false
-                    localEvent = null;
+            try {
+                if(!runningThread.compareAndSet(null,Thread.currentThread())) {
+                    // somehow this worker was executed before it was finished
+                    // @todo: do we throw an exception or ?
                 }
-                if(localEvent == null) { // there were no events for 60 seconds, die
-                    running = false;
-                } else {
-                    // handle the event...
-                    handleLocalEvent(localEvent);
+                while(running) {
+                    LocalEvent localEvent = null;
+                    try {
+                        localEvent = eventQueue.poll(60, TimeUnit.SECONDS);
+                    } catch (InterruptedException e) {
+                        // this will probably mean we interrupted the thread so running will become false
+                        localEvent = null;
+                    }
+                    if(localEvent == null) { // there were no events for 60 seconds, die
+                        running = false;
+                    } else {
+                        // handle the event...
+                        try {
+                            handleLocalEvent(localEvent);
+                        } catch (Exception e) {
+                            LOG.log(Level.SEVERE,"Exception on handleLocalEvent",e);
+                        }
+                    }
                 }
+            } finally {
+                runningThread.compareAndSet(Thread.currentThread(),null);
+                running = false;
+                return null;
             }
-            runningThread.compareAndSet(Thread.currentThread(),null);
-            return null;
         }
 
         private boolean isRunning() {
@@ -260,6 +276,36 @@ public class LocalRegionServer implements RegionServer {
         }
 
         private void stop() {
+            if(this.runningThread.get() != null) this.runningThread.get().interrupt();
+        }
+    }
+
+    private final class TickEventGenerator implements Callable<Object> {
+        private final AtomicReference<Thread> runningThread = new AtomicReference<Thread>(null);
+        private volatile boolean running = true;
+        private final long tickInterval;
+
+        private TickEventGenerator(long tickInterval) {
+            this.tickInterval = tickInterval;
+        }
+
+        @Override
+        public final Object call() throws Exception {
+            runningThread.set(Thread.currentThread());
+            while(running) {
+                broadCast(new TickEvent(tickInterval));
+                try {
+                    Thread.sleep(tickInterval);
+                } catch (InterruptedException e) {
+                    // we got interrupted
+                }
+            }
+            runningThread.set(null);
+            return null;
+        }
+
+        private void stop() {
+            running = false;
             if(this.runningThread.get() != null) this.runningThread.get().interrupt();
         }
     }

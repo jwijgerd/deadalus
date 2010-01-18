@@ -64,9 +64,9 @@ public class Bomb implements DeadalusObject {
 
     @Override
     public final void onEvent(Event event) {
-        if(exploded) return;
+        if(id.equals(event.getOriginationObjectId())) return;
         // all the logic needs to go here
-        if("create".equals(event.getType()) || "enter".equals(event.getType())) {
+        if(!exploded && ("create".equals(event.getType()) || "enter".equals(event.getType()))) {
             // check the distance, are they within range to trip the bomd
             if(event.getOriginatingLocation().distance(context.getCurrentLocation(), LengthUnit.METRES) < activationRadius) {
                 // explode
@@ -76,6 +76,7 @@ public class Bomb implements DeadalusObject {
             // for now we can only explode once and then we become inactive
         } else if("tick".equals(event.getType())) {
             // @todo: what do we want to do on a tick?
+            System.out.println("Tick");
         } else if("damage".equals(event.getType())) {
             // we've done damage! yes ;-)
             

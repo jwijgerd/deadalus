@@ -19,10 +19,12 @@ package com.googlecode.deadalus;
 import com.googlecode.deadalus.geoutils.LengthUnit;
 import com.googlecode.deadalus.geoutils.GeoHash;
 
+import java.io.Serializable;
+
 /**
  * Describes a Coordinate somewhere on earth. Immutable object
  */
-public final class Coordinate {
+public final class Coordinate implements Serializable {
     private static final double EPSILON = 1e-12d;
 	private static final double equatorRadius = 6378137d;
     private static final double poleRadius = 6356752.3142d;

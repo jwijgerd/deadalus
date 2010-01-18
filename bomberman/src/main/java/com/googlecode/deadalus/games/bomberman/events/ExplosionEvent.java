@@ -21,6 +21,7 @@ import com.googlecode.deadalus.Coordinate;
 import com.googlecode.deadalus.geoutils.LengthUnit;
 
 import java.util.UUID;
+import java.io.Serializable;
 
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
@@ -44,7 +45,7 @@ public class ExplosionEvent extends EventBase implements Event<ExplosionEvent.Ex
         return info;
     }
 
-    public static final class ExplosionInfo {
+    public static final class ExplosionInfo implements Serializable {
         private final int maxDamage;  // maximum damage
         private final int blastRadius;  // blast radius in meters
 

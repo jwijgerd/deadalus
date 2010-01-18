@@ -24,7 +24,7 @@ import java.io.Serializable;
 /**
  * Describes an Event within the Deadalus application
  */
-public interface Event<PayloadType> extends Serializable {
+public interface Event<PayloadType extends Serializable> extends Serializable {
     /**
      *
      * @return  the type of this event

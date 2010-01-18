@@ -20,6 +20,7 @@ import com.googlecode.deadalus.Event;
 import com.googlecode.deadalus.Coordinate;
 
 import java.util.UUID;
+import java.io.Serializable;
 
 /**
  * @author Joost van de Wijgerd <joost@vdwbv.com>
@@ -42,7 +43,7 @@ public class DamageEvent extends EventBase implements Event<DamageEvent.DamageIn
         return payload;
     }
 
-    public static final class DamageInfo {
+    public static final class DamageInfo implements Serializable {
         private final boolean fatal;
         private final int damage;
 

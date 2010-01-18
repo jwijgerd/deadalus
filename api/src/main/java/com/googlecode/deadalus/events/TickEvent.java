@@ -20,6 +20,7 @@ import com.googlecode.deadalus.Coordinate;
 import com.googlecode.deadalus.Event;
 
 import java.util.UUID;
+import java.io.Serializable;
 
 /**
  * Tick or HeartBeat event. Objects that want to run some logic periodically can listen to this event and execute
@@ -61,7 +62,7 @@ public class TickEvent implements Event<TickEvent.TickInterval> {
         return this.interval;
     }
 
-    public final class TickInterval {
+    public final class TickInterval implements Serializable {
         private final long interval;
 
         private TickInterval(long interval) {
