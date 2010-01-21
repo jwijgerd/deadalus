@@ -59,7 +59,7 @@ public class RestController {
         return "success";    
     }
 
-    @RequestMapping(value = "/create/{clsId}/{latlon}",method = {RequestMethod.GET})
+    @RequestMapping(value = "/create/{clsId}/{latlon}/*.*",method = {RequestMethod.GET})
     public final String createObject(@PathVariable("clsId") UUID clsId,@PathVariable("latlon") Coordinate latlon, Model model) {
         // first get the RegionServer for this coordinate
         RegionServer regionServer = regionServerRegistry.findByCoordinate(latlon);
@@ -70,7 +70,7 @@ public class RestController {
         return "create";
     }
 
-    @RequestMapping("/move/{objectId}/{to.latlon}")
+    @RequestMapping("/move/{objectId}/{to.latlon}/*.*")
     public final String move(@PathVariable("objectId") UUID objectId,@PathVariable("to.latlon") Coordinate to) {
         RegionServer regionServer = regionServerRegistry.findByObjectId(objectId);
         regionServer.moveObject(objectId,to);

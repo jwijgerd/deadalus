@@ -75,7 +75,7 @@ public class GeoHashTests {
             GeoHash.Point[] bbox = GeoHash.fromGeohashString(gh11).getBoundingBoxPoints();
             Coordinate from = new Coordinate(bbox[0].getLatitude(),bbox[0].getLongitude());
             Coordinate to = new Coordinate(bbox[1].getLatitude(),bbox[1].getLongitude());
-            System.out.println("dist = "+from.distance(to,LengthUnit.KILOMETRES));
+            System.out.println("dist = "+from.distance(to,LengthUnit.METRES));
             i-=1;
         }
     }

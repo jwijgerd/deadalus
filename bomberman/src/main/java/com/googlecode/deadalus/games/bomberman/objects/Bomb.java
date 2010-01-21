@@ -20,6 +20,7 @@ import com.googlecode.deadalus.DeadalusObject;
 import com.googlecode.deadalus.Context;
 import com.googlecode.deadalus.Event;
 import com.googlecode.deadalus.games.bomberman.events.ExplosionEvent;
+import com.googlecode.deadalus.games.bomberman.events.DamageEvent;
 import com.googlecode.deadalus.geoutils.LengthUnit;
 
 import java.util.UUID;
@@ -70,16 +71,19 @@ public class Bomb implements DeadalusObject {
             // check the distance, are they within range to trip the bomd
             if(event.getOriginatingLocation().distance(context.getCurrentLocation(), LengthUnit.METRES) < activationRadius) {
                 // explode
+                System.out.println("Booooom!");
                 exploded = true;
                 context.broadCast(new ExplosionEvent(this.getId(),context.getCurrentLocation(),ExplosionEvent.MEDIUMBLAST),blastRadius,LengthUnit.METRES);
+            } else {
+                System.out.println("Missed, distance is "+event.getOriginatingLocation().distance(context.getCurrentLocation(), LengthUnit.METRES));
             }
             // for now we can only explode once and then we become inactive
         } else if("tick".equals(event.getType())) {
             // @todo: what do we want to do on a tick?
-            System.out.println("Tick");
+            //System.out.println("Tick");
         } else if("damage".equals(event.getType())) {
             // we've done damage! yes ;-)
-            
+            System.out.println("I did "+((DamageEvent.DamageInfo)event.getPayload()).getDamage()+" Damage!");
         }
     }
 }

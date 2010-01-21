@@ -80,10 +80,12 @@ public class Player implements DeadalusObject {
         final int newHealth = health.addAndGet(-damage);
         if(newHealth <= 0) {  // oops we died!
             // notify the Bomb that it has made a Kill!
+            System.out.println("Oh no, I died!");
             context.send(new DamageEvent(context.getCurrentLocation(),getId(),damage,true),event.getOriginationObjectId(),null);
             // @todo: does this Player object have a next life or should the User instantiate a new Life?
         } else {
             // notify the exploding Bomb of the damage done
+            System.out.println("Sustained "+damage+" Damage. Health = "+health.get());
             context.send(new DamageEvent(context.getCurrentLocation(),getId(),damage,false),event.getOriginationObjectId(),null);
         }
     }
