@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Joost van de Wijgerd <joost@vdwbv.com>
  */
 public class LocalObject implements DeadalusObject, Context {
-    private transient final LocalRegionServer regionServer;
+    private final LocalRegionServer regionServer;
     private final DeadalusObject owner = null; // @todo: set the owner 
     private final DeadalusObject delegate;
     private final AtomicReference<Coordinate> currentLocation = new AtomicReference<Coordinate>(null);

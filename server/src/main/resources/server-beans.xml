@@ -66,6 +66,26 @@
         </constructor-arg>
     </bean>
 
+    <bean id="pmf"
+        class="org.springframework.orm.jdo.LocalPersistenceManagerFactoryBean">
+        <property name="jdoProperties">
+            <props>
+                <prop key="javax.jdo.PersistenceManagerFactoryClass">org.datanucleus.jdo.JDOPersistenceManagerFactory</prop>
+                <prop key="javax.jdo.option.ConnectionURL">jdbc:mysql://localhost/deadalus</prop>
+                <prop key="javax.jdo.option.ConnectionUserName">root</prop>
+                <prop key="javax.jdo.option.ConnectionPassword"></prop>
+                <prop key="javax.jdo.option.ConnectionDriverName">com.mysql.jdbc.Driver</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Transaction Manager for PMF -->
+    <bean id="jdoTransactionManager" class="org.springframework.orm.jdo.JdoTransactionManager">
+        <property name="persistenceManagerFactory">
+            <ref local="pmf"/>
+        </property>
+    </bean>
+
 
 </beans>
 
